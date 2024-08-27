@@ -1,5 +1,5 @@
 import { MessagePort } from 'worker_threads';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, URL } from 'url';
 
 export default abstract class AbstractBaseWorker<T, R> {
 

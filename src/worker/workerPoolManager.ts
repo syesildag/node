@@ -12,8 +12,13 @@ export default class WorkerPoolManager<T, R, This = any> {
    }
 
    run(tasks: T[], callback: CallbackIndex<R, This>): Promise<void> {
+
+      if (!tasks || tasks.length === 0)
+         return Promise.resolve();
+
       return new Promise((resolve, reject) => {
          const pool = new WorkerPool<T, R, This>(this.instance.getModulePath(), this.options, this.numThreads);
+         pool.setMaxListeners(tasks.length);
          pool.onError(error => reject(error));
          let finished = 0;
          for (let i = 0; i < tasks.length; i++) {
