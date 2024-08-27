@@ -1,14 +1,8 @@
-export class AssertionError extends Error {
-}
-
-export function assert(condition: any, msg?: string): asserts condition {
-   if (!condition)
-      throw new AssertionError(msg);
-}
+import { AssertionError } from 'assert';
 
 function assertIsString(value: any): asserts value is string {
    if (!isString(value))
-      throw new AssertionError("Not a string!");
+      throw new AssertionError({message: "Not a string!"});
 }
 
 /**
