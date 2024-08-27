@@ -6,6 +6,7 @@
    "main": "index.js",
    "scripts": {
       "index"   : "node dist/src/index.js",
+      "dts"     : "node dist/src/dts.js",
       "clean"   : "rm -fr dist/",
       "compile" : "tsc",
       "test"    : "jest"
