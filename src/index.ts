@@ -4,6 +4,14 @@ import prettyFormat from 'pretty-format';
 import range from './utils/rangeIterator.js';
 import squareWorker, { Task } from './worker/custom/squareWorker.js';
 import WorkerPoolManager from './worker/workerPoolManager.js';
+import throttle from './utils/throttle.js';
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+function echo<T = any>(value: T): T {
+   console.log("echo: " + value);
+   return value;
+}
 
 async function main() {
 
@@ -29,5 +37,13 @@ async function main() {
          });
    await manager.run(tasks, (err, result, idx) => console.log(err, idx, result));
    console.log("end of pool");
+
+   let throttled = throttle(echo, 500);
+   throttled(1);
+   throttled(2);
+   throttled(3);
+   throttled(4);
+   await delay(1000);
+   throttled(5);
 }
 main();
