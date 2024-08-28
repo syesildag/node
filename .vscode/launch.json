@@ -7,7 +7,7 @@
       {
          "type": "node",
          "request": "launch",
-         "name": "Launch Index",
+         "name": "Launch Server",
          "skipFiles": [
             "<node_internals>/**"
          ],

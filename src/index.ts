@@ -1,49 +1,59 @@
-import { diff } from 'jest-diff';
-import * as os from 'os';
-import prettyFormat from 'pretty-format';
-import range from './utils/rangeIterator.js';
-import squareWorker, { Task } from './worker/custom/squareWorker.js';
-import WorkerPoolManager from './worker/workerPoolManager.js';
-import throttle from './utils/throttle.js';
+import "dotenv/config";
+import express, { NextFunction, Request, Response } from "express";
+import { ServeStaticOptions } from "serve-static";
+import cookieParser from "cookie-parser";
+import { fileURLToPath, URL } from 'url';
+import { dirname } from 'path';
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-function echo<T = any>(value: T): T {
-   console.log("echo: " + value);
-   return value;
-}
+const app = express();
 
-async function main() {
+// load the cookie-parsing middleware
+app.use(cookieParser());
 
-   console.log("Platform: " + os.platform());
-   console.log("Architecture: " + os.arch());
-   console.log("Hostname: " + os.hostname());
+// Serve static files
+var options: ServeStaticOptions = {
+   index: false,
+   maxAge: '1d',
+   redirect: false,
+   setHeaders: function (res, path, stat) {
+      res.setHeader('x-timestamp', Date.now());
+   }
+};
 
-   [...range(1, 10, 2)]
-      .map(i => Math.pow(i, 2))
-      .forEach((index) => console.log("Index: " + index));
+app.use(express.static('static', options));
 
-   const a = [1, 2, 3, 4, 5];
-   console.log("a: " + prettyFormat.format(a));
-   const b = [5, 4, 3, 2, 1];
-   console.log("b: " + prettyFormat.format(b));
-   console.log("diff: " + diff(a, b));
+console.log("__dirname: " + __dirname + '/../../static');
 
-   let manager = new WorkerPoolManager<Task, number>(squareWorker);
-   const tasks =
-      [...range(0, 100)]
-         .map(i => {
-            return { a: i, b: i };
-         });
-   await manager.run(tasks, (err, result, idx) => console.log(err, idx, result));
-   console.log("end of pool");
+app.use('/static', express.static(__dirname + '/../../static'));
 
-   let throttled = throttle(echo, 500);
-   throttled(1);
-   throttled(2);
-   throttled(3);
-   throttled(4);
-   await delay(1000);
-   throttled(5);
-}
-main();
+// Error-handling middleware
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+   console.error(err.stack);
+   res.status(500).send('Something broke!');
+});
+
+const {
+   port = 3000,
+   title = 'HomePage'
+} = process.env;
+
+app.get("/", (req: Request, res: Response) => {
+   res.send(
+`
+<html>
+   <head>
+      <title>${title}</title>
+   </head>
+   <body>
+   Express + TypeScript Server
+   </body>
+</html>`
+   );
+});
+
+app.listen(port, () => {
+   console.log(`[server]: Server is running at http://localhost:${port}`);
+});
