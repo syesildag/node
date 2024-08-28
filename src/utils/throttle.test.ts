@@ -6,7 +6,6 @@ jest.useFakeTimers();
 let counter = 0;
 
 function increment() {
-   console.log("counter: " + counter);
    counter++;
 }
 
