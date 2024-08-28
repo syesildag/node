@@ -5,8 +5,8 @@ import cookieParser from "cookie-parser";
 import { fileURLToPath, URL } from 'url';
 import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+export const __filename = fileURLToPath(import.meta.url);
+export const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -22,10 +22,6 @@ var options: ServeStaticOptions = {
       res.setHeader('x-timestamp', Date.now());
    }
 };
-
-app.use(express.static('static', options));
-
-console.log("__dirname: " + __dirname + '/../../static');
 
 app.use('/static', express.static(__dirname + '/../../static'));
 
