@@ -1,3 +1,7 @@
+export interface Constructor<A extends any[], T> {
+   new(...args: A): T;
+}
+
 export interface ContextInterceptor<T> {
    intercept(ctx: T): any;
 }
