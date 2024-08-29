@@ -3,7 +3,7 @@
    "version": "1.0.0",
    "type": "module",
    "description": "NodeJS",
-   "main": "index.js",
+   "main": "src/index.ts",
    "scripts": {
       "index": "node dist/src/index.js",
       "dts": "node dist/src/dts.js",
