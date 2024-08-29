@@ -1,10 +1,14 @@
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
+import { createHandler } from "graphql-http/lib/use/express";
+import { buildSchema } from "graphql";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import favicon from "serve-favicon";
 import { fileURLToPath, URL } from 'url';
 import path, { dirname } from 'path';
+import fs from 'fs';
+import rootValue from "./root.js";
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(__filename);
@@ -32,7 +36,7 @@ app.use('/static', express.static(path.join(__dirname, '../../static'), {
    redirect: false,
    setHeaders: function (res, path, stat) {
       res.setHeader('x-timestamp', Date.now());
-   }
+   },
 }));
 
 // Error-handling middleware
@@ -56,9 +60,14 @@ app.use(express.urlencoded({ limit: '1mb', extended: true }));
 // Favicon
 app.use(favicon(path.join(__dirname, '../../static/images', 'favicon.ico')));
 
+// Construct a schema, using GraphQL schema language
+const schema = buildSchema(fs.readFileSync(path.join(__dirname, '../../schema.graphql'), { encoding: 'utf8' }));
+
+// Create and use the GraphQL handler.
+app.all("/graphql", createHandler({ schema, rootValue }));
+
 app.get("/:page", (req: Request, res: Response) => {
-   res.send(
-`
+   res.send(`
 <html>
    <head>
       <title>${process.env.TITLE}</title>
@@ -75,11 +84,10 @@ app.get("/:page", (req: Request, res: Response) => {
       <br>SECRET  :<br> ${JSON.stringify(req.secret)}
       <br>SECURE  :<br> ${JSON.stringify(req.secure)}
    </body>
-</html>`
-   );
+</html>`);
 });
 
-const PORT = process.env.PORT ?? 3000;
-app.listen(PORT, () => {
+const PORT: number = process.env.PORT ? +process.env.PORT : 3000;
+app.listen(PORT, '127.0.0.1', () => {
    console.log(`[server]: Server is running at http://localhost:${PORT}`);
 });
