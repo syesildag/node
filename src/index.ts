@@ -1,13 +1,13 @@
+import compression from "compression";
+import cookieParser from "cookie-parser";
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
-import { createHandler } from "graphql-http/lib/use/express";
-import { buildSchema } from "graphql";
-import cookieParser from "cookie-parser";
-import compression from "compression";
-import favicon from "serve-favicon";
-import { fileURLToPath, URL } from 'url';
-import path, { dirname } from 'path';
 import fs from 'fs';
+import { buildSchema } from "graphql";
+import { createHandler } from "graphql-http/lib/use/express";
+import path, { dirname } from 'path';
+import favicon from "serve-favicon";
+import { fileURLToPath } from 'url';
 import rootValue from "./root.js";
 
 export const __filename = fileURLToPath(import.meta.url);
