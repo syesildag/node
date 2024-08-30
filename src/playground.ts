@@ -1,6 +1,6 @@
 import { diff } from 'jest-diff';
 import * as os from 'os';
-import prettyFormat from 'pretty-format';
+import * as prettyFormat from 'pretty-format';
 import range from './utils/rangeIterator.js';
 import squareWorker, { Task } from './worker/custom/squareWorker.js';
 import WorkerPoolManager from './worker/workerPoolManager.js';

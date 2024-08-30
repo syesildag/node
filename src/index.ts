@@ -61,10 +61,25 @@ app.use(express.urlencoded({ limit: '1mb', extended: true }));
 app.use(favicon(path.join(__dirname, '../../static/images', 'favicon.ico')));
 
 // Construct a schema, using GraphQL schema language
-const schema = buildSchema(fs.readFileSync(path.join(__dirname, '../../schema.graphql'), { encoding: 'utf8' }));
+const schema = buildSchema(
+   fs.readFileSync(
+      path.join(__dirname, '../../schema.graphql'), {
+      encoding: 'utf8'
+   }));
 
 // Create and use the GraphQL handler.
 app.all("/graphql", createHandler({ schema, rootValue }));
+
+app.get("/graphiql", (req: Request, res: Response) => {
+   res.send(`
+<html>
+   <head>
+      <title>Graphiql</title>
+   </head>
+   <body>
+   </body>
+</html>`);
+});
 
 app.get("/:page", (req: Request, res: Response) => {
    res.send(`

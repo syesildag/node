@@ -1,6 +1,10 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import throttle from './throttle.js';
 
+Object.defineProperty(global, 'performance', {
+   writable: true,
+});
+
 jest.useFakeTimers();
 
 let counter = 0;

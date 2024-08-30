@@ -1,6 +1,10 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import debounce from './debounce.js';
 
+Object.defineProperty(global, 'performance', {
+   writable: true,
+});
+
 jest.useFakeTimers();
 
 type Value = { title?: string };
