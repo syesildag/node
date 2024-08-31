@@ -37,7 +37,7 @@ const defaultQuery = `query GetDie($numSides: Int, $numRolls: Int!) {
 
 const defaultVariables = `{
   "numSides": 6,
-  "numRolls": 6
+  "numRolls": 5
 }`;
 
 function GraphqlPlayground() {
