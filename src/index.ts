@@ -70,29 +70,6 @@ const schema = buildSchema(
 // Create and use the GraphQL handler.
 app.all("/graphql", createHandler({ schema, rootValue }));
 
-app.get("/graphiql", (req: Request, res: Response) => {
-   res.send(`
-<html>
-   <head>
-      <title>Graphiql</title>
-      <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
-      <script type="text/javascript"  src="/static/lib/webpack/dist/graphiql.js"></script>
-      <script>
-         debugger;
-         document.addEventListener("DOMContentLoaded", function(event) {
-            debugger;
-            // your page initialization code here
-            // the DOM will be available here
-            mountGraphiql('placeholder', '/graphql');
-         });
-      </script>
-   </head>
-   <body>
-      <div id="placeholder"/>
-   </body>
-</html>`);
-});
-
 app.get("/:page", (req: Request, res: Response) => {
    res.send(`
 <html>

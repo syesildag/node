@@ -19,14 +19,18 @@ export default function mountGraphiql(placeholder: string, endpoint: string) {
 }
 
 // noinspection JSUnusedLocalSymbols
-function graphQLFetcher(graphQLParams: FetcherParams, opts?: FetcherOpts) {
-   return fetch(URL, {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(graphQLParams),
-      credentials: "omit"
-   }).then(response => response.json())
-      .catch(reason => console.log(reason));
+async function graphQLFetcher(graphQLParams: FetcherParams, opts?: FetcherOpts) {
+   try {
+      const response = await fetch(URL, {
+         method: "post",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(graphQLParams),
+         credentials: "omit"
+      });
+      return await response.json();
+   } catch (reason) {
+      return console.log(reason);
+   }
 }
 
 const defaultQuery = `query GetDie($numSides: Int, $numRolls: Int!) {
