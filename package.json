@@ -9,8 +9,8 @@
       "start": "node --loader ts-node/esm src/index.ts",
       "test": "jest",
       "codegen": "graphql-codegen --config codegen.ts",
-      "webpack:dev": "webpack-dev-server --env NODE_ENV=development",
-      "webpack:prod": "webpack --env NODE_ENV=production"
+      "webpack:dev": "node --loader ts-node/esm node_modules/webpack-dev-server/bin/webpack-dev-server.js --env NODE_ENV=development",
+      "webpack:prod": "node --loader ts-node/esm node_modules/webpack-cli/bin/cli.js --env NODE_ENV=production --config webpack.config.ts"
    },
    "author": "Serkan YESILDAG",
    "license": "MIT",
@@ -25,7 +25,7 @@
       "@types/compression": "^1.7.5",
       "@types/cookie-parser": "^1.4.7",
       "@types/express": "^4.17.21",
-      "@types/node": "^12.12.6",
+      "@types/node": "^20.16.2",
       "@types/react": "^18.3.5",
       "@types/react-dom": "^18.3.0",
       "@types/serve-favicon": "^2.5.7",

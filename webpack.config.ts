@@ -1,13 +1,17 @@
 import "dotenv/config";
-import webpack from "webpack";
+import webpack, { WebpackOptionsNormalized, WebpackPluginInstance } from "webpack";
 import path, { dirname } from 'path';
-import entriesJson from "./entries.json" with {type: 'json'};
+import entriesJson from "./entries.json" assert {type: 'json'};
 import { fileURLToPath } from 'url';
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(__filename);
 
-function getEntries(entriesNames, envBundleName) {
+interface Entry {
+   name: string;
+};
+
+function getEntries(entriesNames: string[], envBundleName?: string) {
    return entriesNames.reduce((bundle, bundleName) => (
       envBundleName && !bundleName.includes(envBundleName)
          ? bundle
@@ -17,19 +21,19 @@ function getEntries(entriesNames, envBundleName) {
          }), {});
 }
 
-function progressPluginhandler(percentage, message, ...args) {
+function progressPluginhandler(percentage: number, message: string, ...args: string[]) {
    console.info(percentage, message, ...args);
 };
 
-let config = env => {
+let config: (env: NodeJS.ProcessEnv) => WebpackOptionsNormalized[] = (env: any) => {
 
    let NODE_ENV = env.NODE_ENV;
    let development = NODE_ENV === "development";
    //let production = NODE_ENV === "production";
 
-   const entriesNames = entriesJson.filter(entry => !entry.rel).map(entry => entry.name);
+   const entriesNames = entriesJson.map(entry => entry.name);
 
-   let plugins = [];
+   let plugins: WebpackPluginInstance[] = [];
    let stats = {};
 
    if (development) {
@@ -51,7 +55,17 @@ let config = env => {
    const serverPort = process.env.PORT;
    const webpackPort = process.env.WEBPACK_PORT;
 
-   let defaultConfig = {
+   let defaultConfig: WebpackOptionsNormalized = {
+      cache: { type: 'filesystem' },
+      experiments: {},
+      externals: {},
+      externalsPresets: {},
+      infrastructureLogging: {},
+      node: {},
+      optimization: {},
+      resolveLoader: {},
+      snapshot: {},
+      watchOptions: {},
       entry: entries,
       devtool: development ? "source-map" : false,
       devServer: {
@@ -73,6 +87,9 @@ let config = env => {
       },
       plugins,
       module: {
+         defaultRules: [],
+         parser: {},
+         generator: {},
          noParse: [fileURLToPath(import.meta.resolve('typescript/lib/typescript.js'))],
          rules: [
             {
