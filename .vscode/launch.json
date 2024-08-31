@@ -7,11 +7,15 @@
       {
          "type": "node",
          "request": "launch",
+         "runtimeArgs": [
+            "--loader",
+            "ts-node/esm",
+         ],
          "name": "Launch Server",
          "skipFiles": [
             "<node_internals>/**"
          ],
-         "program": "${workspaceFolder}/dist/src/index.js",
+         "program": "${workspaceFolder}/src/index.ts",
          "outFiles": [
             "${workspaceFolder}/**/*.js"
          ]

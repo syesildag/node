@@ -7,6 +7,8 @@ let URL: string;
 
 export default function mountGraphiql(placeholder: string, endpoint: string) {
 
+   URL = endpoint;
+
    let container = document.getElementById(placeholder);
    if (container) {
       const root = createRoot(container);
@@ -28,11 +30,16 @@ function graphQLFetcher(graphQLParams: FetcherParams, opts?: FetcherOpts) {
 }
 
 const defaultQuery = `
-query Hello {
-  hello
+query GetDie($numSides: Int, $numRolls: Int!) {
+    getDie(numSides: $numSides) {
+        roll(numRolls: $numRolls)
+    }
 }`;
 
-const defaultVariables = '{"criterias": {"nbDays": 7,"startDate": "2022-06-10","nbAdults": 2,"etabIDs": [1]}}';
+const defaultVariables = `{
+  "numSides": 6,
+  "numRolls": 6
+}`;
 
 function GraphqlPlayground() {
    return <GraphiQL
