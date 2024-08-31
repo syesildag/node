@@ -29,11 +29,10 @@ function graphQLFetcher(graphQLParams: FetcherParams, opts?: FetcherOpts) {
       .catch(reason => console.log(reason));
 }
 
-const defaultQuery = `
-query GetDie($numSides: Int, $numRolls: Int!) {
-    getDie(numSides: $numSides) {
-        roll(numRolls: $numRolls)
-    }
+const defaultQuery = `query GetDie($numSides: Int, $numRolls: Int!) {
+  getDie(numSides: $numSides) {
+    roll(numRolls: $numRolls)
+  }
 }`;
 
 const defaultVariables = `{
