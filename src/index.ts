@@ -32,6 +32,7 @@ app.use(cookieParser());
 // Serve static files
 app.use('/static', express.static(path.join(__dirname, '../static'), {
    index: false,
+   etag: true,
    maxAge: '1d',
    redirect: false,
    setHeaders: function (res, path, stat) {
