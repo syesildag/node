@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import groupBy from './groupBy.js';
+import groupBy from './groupBy';
 import assert from 'assert';
 
 const inventory = [

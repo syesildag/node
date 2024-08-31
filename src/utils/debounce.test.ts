@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import debounce from './debounce.js';
+import debounce from './debounce';
 
 Object.defineProperty(global, 'performance', {
    writable: true,

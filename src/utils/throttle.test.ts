@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import throttle from './throttle.js';
+import throttle from './throttle';
 
 Object.defineProperty(global, 'performance', {
    writable: true,

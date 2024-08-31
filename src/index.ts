@@ -8,7 +8,7 @@ import { createHandler } from "graphql-http/lib/use/express";
 import path, { dirname } from 'path';
 import favicon from "serve-favicon";
 import { fileURLToPath } from 'url';
-import rootValue from "./root.js";
+import rootValue from "./root";
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(__filename);
@@ -30,7 +30,7 @@ function shouldCompress(req: express.Request, res: express.Response) {
 app.use(cookieParser());
 
 // Serve static files
-app.use('/static', express.static(path.join(__dirname, '../../static'), {
+app.use('/static', express.static(path.join(__dirname, '../static'), {
    index: false,
    maxAge: '1d',
    redirect: false,
@@ -58,12 +58,12 @@ app.use(express.text({ limit: '1mb' }));
 app.use(express.urlencoded({ limit: '1mb', extended: true }));
 
 // Favicon
-app.use(favicon(path.join(__dirname, '../../static/images', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, '../static/images', 'favicon.ico')));
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(
    fs.readFileSync(
-      path.join(__dirname, '../../schema.graphql'), {
+      path.join(__dirname, '../schema.graphql'), {
       encoding: 'utf8'
    }));
 
@@ -75,8 +75,20 @@ app.get("/graphiql", (req: Request, res: Response) => {
 <html>
    <head>
       <title>Graphiql</title>
+      <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
+      <script type="text/javascript"  src="/static/lib/webpack/dist/graphiql.js"></script>
+      <script>
+         debugger;
+         document.addEventListener("DOMContentLoaded", function(event) {
+            debugger;
+            // your page initialization code here
+            // the DOM will be available here
+            mountGraphiql('placeholder', '/graphql');
+         });
+      </script>
    </head>
    <body>
+      <div id="placeholder"/>
    </body>
 </html>`);
 });

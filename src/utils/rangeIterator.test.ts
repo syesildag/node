@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import rangeIterator from './rangeIterator.js';
+import rangeIterator from './rangeIterator';
 
 describe('rangeIterator', () => {
    test('nexts equal 1, 3, 5, 7', () => {
