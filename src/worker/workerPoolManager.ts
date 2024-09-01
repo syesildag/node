@@ -1,6 +1,6 @@
 import { WorkerOptions } from 'worker_threads';
-import AbstractBaseWorker from './abstractBaseWorker.js';
-import WorkerPool from './workerPool.js';
+import AbstractBaseWorker from './abstractBaseWorker';
+import WorkerPool from './workerPool';
 
 export type CallbackIndex<Result, This = any> = (this: This, err: null | Error, result: null | Result, index?: number) => void;
 

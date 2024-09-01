@@ -57,7 +57,6 @@ export default class WorkerPool<Task, Result, This = any> extends EventEmitter {
    }
 
    addNewWorker() {
-      //const worker = new Worker(path.resolve(dirname(), 'worker.js'));
       const worker = new Worker(this.filename, this.options);
       worker.on('message', (result: Result) => {
          // In case of success: Call the callback that was passed to `runTask`,

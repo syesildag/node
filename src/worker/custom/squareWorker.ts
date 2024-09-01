@@ -1,5 +1,5 @@
 import { parentPort } from 'worker_threads';
-import AbstractBaseWorker from '../abstractBaseWorker.js';
+import AbstractBaseWorker from '../abstractBaseWorker';
 import { URL } from 'url';
 
 export interface Task {

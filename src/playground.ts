@@ -1,10 +1,10 @@
 import { diff } from 'jest-diff';
 import * as os from 'os';
 import * as prettyFormat from 'pretty-format';
-import range from './utils/rangeIterator.js';
-import squareWorker, { Task } from './worker/custom/squareWorker.js';
-import WorkerPoolManager from './worker/workerPoolManager.js';
-import throttle from './utils/throttle.js';
+import range from './utils/rangeIterator';
+import squareWorker, { Task } from './worker/custom/squareWorker';
+import WorkerPoolManager from './worker/workerPoolManager';
+import throttle from './utils/throttle';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
