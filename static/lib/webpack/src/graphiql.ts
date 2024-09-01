@@ -1,3 +1,3 @@
-import mountGraphiql from "../../../../www/graphql/graphiql";
+import mount from "../../../../src/react/graphiql/mount";
 debugger;
-(window as any).mountGraphiql = mountGraphiql;
+(window as any).mountGraphiql = mount;

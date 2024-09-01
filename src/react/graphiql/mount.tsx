@@ -5,7 +5,7 @@ import type { FetcherOpts, FetcherParams } from '@graphiql/toolkit';
 
 let URL: string;
 
-export default function mountGraphiql(placeholder: string, endpoint: string) {
+export default function mount(placeholder: string, endpoint: string) {
 
    URL = endpoint;
 
