@@ -1,38 +1,24 @@
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { GraphiQL } from "graphiql";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { GraphiQL } from "graphiql";
-import type { FetcherOpts, FetcherParams } from '@graphiql/toolkit';
 
-let URL: string;
-
-export default function mount(placeholder: string, endpoint: string) {
-
-   URL = endpoint;
+export default function mount(placeholder: string, url: string) {
 
    let container = document.getElementById(placeholder);
    if (container) {
       const root = createRoot(container);
-      root.render(<GraphqlPlayground />);
+      root.render(<GraphiQL
+         fetcher={createGraphiQLFetcher({ url })}
+         defaultQuery={defaultQuery}
+         variables={defaultVariables}
+      />);
    }
    else
       console.error(`Element with id ${placeholder} not found.`);
 }
 
 // noinspection JSUnusedLocalSymbols
-async function graphQLFetcher(graphQLParams: FetcherParams, opts?: FetcherOpts) {
-   try {
-      const response = await fetch(URL, {
-         method: "post",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify(graphQLParams),
-         credentials: "omit"
-      });
-      return await response.json();
-   } catch (reason) {
-      return console.log(reason);
-   }
-}
-
 const defaultQuery = `query GetDie($numSides: Int, $numRolls: Int!) {
   getDie(numSides: $numSides) {
     roll(numRolls: $numRolls)
@@ -43,11 +29,3 @@ const defaultVariables = `{
   "numSides": 6,
   "numRolls": 5
 }`;
-
-function GraphqlPlayground() {
-   return <GraphiQL
-      fetcher={graphQLFetcher}
-      defaultQuery={defaultQuery}
-      variables={defaultVariables}
-   />;
-}
