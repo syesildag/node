@@ -4,6 +4,7 @@
       // It is faster to skip typechecking.
       // Remove if you want ts-node to do typechecking.
       "esm": true,
+      "swc": true,
       "experimentalSpecifierResolution": "node",
       "transpileOnly": true,
       "files": true,
