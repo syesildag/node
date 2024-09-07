@@ -12,7 +12,7 @@
          // compilerOptions specified here will override those declared below,
          // but *only* in ts-node.  Useful if you want ts-node and tsc to use
          // different options with a single tsconfig.json.
-         "module": "ESNext",
+         "module": "CommonJS",
          "moduleResolution": "Node"
       }
    },
@@ -38,7 +38,7 @@
       // "noLib": true,                                    /* Disable including any library files, including the default lib.d.ts. */
       // "useDefineForClassFields": true,                  /* Emit ECMAScript-standard-compliant class fields. */
       /* Modules */
-      "module": "ESNext",                                  /* Specify what module code is generated. */
+      "module": "CommonJS",                                /* Specify what module code is generated. */
       // "rootDir": "./",                                  /* Specify the root folder within your source files. */
       "moduleResolution": "Node",                          /* Specify how TypeScript looks up a file from a given module specifier. */
       // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */

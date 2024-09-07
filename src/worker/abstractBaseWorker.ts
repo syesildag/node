@@ -1,5 +1,4 @@
 import { MessagePort } from 'worker_threads';
-import { fileURLToPath, URL } from 'url';
 
 export default abstract class AbstractBaseWorker<T, R> {
 
@@ -10,11 +9,7 @@ export default abstract class AbstractBaseWorker<T, R> {
          });
    }
 
-   getModulePath() {
-      return fileURLToPath(this.getImportMetaUrl());
-   }
-
-   protected abstract getImportMetaUrl(): string | URL;
+   abstract getFilename(): string;
 
    protected abstract run(task: T): R;
 }

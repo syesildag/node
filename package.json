@@ -1,12 +1,14 @@
 {
    "name": "node",
    "version": "1.0.0",
-   "type": "module",
    "description": "NodeJS",
-   "main": "src/index.ts",
+   "main": "dist/src/index.js",
    "scripts": {
-      "dts": "node --loader ts-node/esm src/dts.js",
-      "start": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
+      "dts": "node dist/src/dts.js",
+      "start": "node dist/src/index.js",
+      "compile": "tsc",
+      "build": "npm run compile && npm run webpack:prod",
+      "buildAndStart": "npm run build && npm start",
       "test": "jest",
       "codegen": "graphql-codegen-esm --config codegen.ts",
       "webpack:dev": "node --loader ts-node/esm node_modules/webpack-dev-server/bin/webpack-dev-server.js --env NODE_ENV=development",
