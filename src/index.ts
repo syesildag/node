@@ -5,7 +5,7 @@ import express, { NextFunction, Request, Response } from "express";
 import fs from 'fs';
 import { buildSchema } from "graphql";
 import { createHandler } from "graphql-http/lib/use/express";
-import path, { dirname } from 'path';
+import path from 'path';
 import favicon from "serve-favicon";
 import rootValue from "./graphql/root";
 
