@@ -13,7 +13,7 @@ function getEntries(entriesNames: string[], envBundleName?: string) {
          ? bundle
          : {
             ...bundle,
-            [bundleName]: ["./static/lib/webpack/src/" + bundleName + ".ts"],
+            [bundleName]: ["./src/static/lib/webpack/" + bundleName + ".ts"],
          }), {});
 }
 
@@ -121,9 +121,9 @@ let config: (env: NodeJS.ProcessEnv) => WebpackOptionsNormalized[] = (env: any) 
          extensions: ['.tsx', '.ts', '.js', '.css']
       },
       output: {
-         path: path.resolve(__dirname, "./static/lib/webpack/dist/"),
+         path: path.resolve(__dirname, "./dist/static/lib/webpack/"),
          filename: "[name].js",
-         publicPath: "/static/lib/webpack/dist/",
+         publicPath: "/dist/static/lib/webpack/",
          pathinfo: !development
       },
       mode: NODE_ENV,
