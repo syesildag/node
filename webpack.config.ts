@@ -123,7 +123,7 @@ let config: (env: NodeJS.ProcessEnv) => WebpackOptionsNormalized[] = (env: any) 
       output: {
          path: path.resolve(__dirname, "./dist/static/lib/webpack/"),
          filename: "[name].js",
-         publicPath: "/dist/static/lib/webpack/",
+         publicPath: "/static/lib/webpack/",
          pathinfo: !development
       },
       mode: NODE_ENV,

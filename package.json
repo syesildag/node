@@ -4,8 +4,8 @@
    "description": "NodeJS",
    "main": "dist/index.js",
    "scripts": {
-      "clean": "rm -fr dist",
-      "generate-sea": "npm run compile;npx esbuild --allow-overwrite dist/src/index.js --bundle --platform=node --outfile=dist/src/index.js;node --experimental-sea-config sea-config.json;cp $(which node) dist/src/index; npx postject dist/src/index NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
+      "clean": "rm -fr dist;rm -fr deploy",
+      "generate-sea": "npm run build;npx esbuild dist/index.js --bundle --platform=node --outfile=deploy/index.js;node --experimental-sea-config sea-config.json;cp $(which node) deploy/index; npx postject deploy/index NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2;cp -r -t deploy dist/static;cp -t deploy dist/schema.graphql;rm deploy/index.js",
       "dts": "node dist/src/dts.js",
       "start": "node dist/index.js",
       "compile": "tsc",
