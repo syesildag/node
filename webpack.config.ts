@@ -1,11 +1,7 @@
 import "dotenv/config";
+import path from 'path';
 import webpack, { WebpackOptionsNormalized, WebpackPluginInstance } from "webpack";
-import path, { dirname } from 'path';
-import entriesJson from "./entries.json" assert {type: 'json'};
-import { fileURLToPath } from 'url';
-
-export const __filename = fileURLToPath(import.meta.url);
-export const __dirname = dirname(__filename);
+import entriesJson from "./entries.json";
 
 interface Entry {
    name: string;
@@ -17,7 +13,7 @@ function getEntries(entriesNames: string[], envBundleName?: string) {
          ? bundle
          : {
             ...bundle,
-            [bundleName]: ["./static/lib/webpack/src/" + bundleName + ".ts"],
+            [bundleName]: ["./src/static/lib/webpack/" + bundleName + ".ts"],
          }), {});
 }
 
@@ -90,13 +86,13 @@ let config: (env: NodeJS.ProcessEnv) => WebpackOptionsNormalized[] = (env: any) 
          defaultRules: [],
          parser: {},
          generator: {},
-         noParse: [fileURLToPath(import.meta.resolve('typescript/lib/typescript.js'))],
+         noParse: [require.resolve('typescript/lib/typescript.js')],
          rules: [
             {
                test: /\.tsx?$/,
                use: [
                   {
-                     loader: fileURLToPath(import.meta.resolve('ts-loader')),
+                     loader: require.resolve('ts-loader'),
                      options: {
                         transpileOnly: development,
                      },
@@ -125,9 +121,9 @@ let config: (env: NodeJS.ProcessEnv) => WebpackOptionsNormalized[] = (env: any) 
          extensions: ['.tsx', '.ts', '.js', '.css']
       },
       output: {
-         path: path.resolve(__dirname, "./static/lib/webpack/dist/"),
+         path: path.resolve(__dirname, "./dist/static/lib/webpack/"),
          filename: "[name].js",
-         publicPath: "/static/lib/webpack/dist/",
+         publicPath: "/dist/static/lib/webpack/",
          pathinfo: !development
       },
       mode: NODE_ENV,

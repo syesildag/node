@@ -17,7 +17,8 @@ export default class WorkerPoolManager<T, R, This = any> {
          return Promise.resolve();
 
       return new Promise((resolve, reject) => {
-         const pool = new WorkerPool<T, R, This>(this.instance.getModulePath(), this.options, this.numThreads);
+         console.log('instance filename: ' + this.instance.getFilename());
+         const pool = new WorkerPool<T, R, This>(this.instance.getFilename(), this.options, this.numThreads);
          pool.setMaxListeners(tasks.length);
          pool.onError(error => reject(error));
          let finished = 0;

@@ -1,6 +1,5 @@
 import { parentPort } from 'worker_threads';
 import AbstractBaseWorker from '../abstractBaseWorker';
-import { URL } from 'url';
 
 export interface Task {
    a: number;
@@ -9,8 +8,8 @@ export interface Task {
 
 class SquareWorker extends AbstractBaseWorker<Task, number> {
 
-   protected getImportMetaUrl(): string | URL {
-      return import.meta.url;
+   getFilename(): string {
+      return __filename;
    }
 
    protected run(task: Task): number {

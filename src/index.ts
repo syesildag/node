@@ -5,13 +5,9 @@ import express, { NextFunction, Request, Response } from "express";
 import fs from 'fs';
 import { buildSchema } from "graphql";
 import { createHandler } from "graphql-http/lib/use/express";
-import path, { dirname } from 'path';
+import path from 'path';
 import favicon from "serve-favicon";
-import { fileURLToPath } from 'url';
 import rootValue from "./graphql/root";
-
-export const __filename = fileURLToPath(import.meta.url);
-export const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -30,7 +26,7 @@ function shouldCompress(req: express.Request, res: express.Response) {
 app.use(cookieParser());
 
 // Serve static files
-app.use('/static', express.static(path.join(__dirname, '../static'), {
+app.use('/static', express.static(path.join(__dirname, 'static'), {
    index: false,
    etag: true,
    maxAge: '1d',
@@ -59,12 +55,12 @@ app.use(express.text({ limit: '1mb' }));
 app.use(express.urlencoded({ limit: '1mb', extended: true }));
 
 // Favicon
-app.use(favicon(path.join(__dirname, '../static/images', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'static/images', 'favicon.ico')));
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(
    fs.readFileSync(
-      path.join(__dirname, '../schema.graphql'), {
+      path.join(__dirname, 'schema.graphql'), {
       encoding: 'utf8'
    }));
 
