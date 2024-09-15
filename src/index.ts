@@ -8,6 +8,7 @@ import { createHandler } from "graphql-http/lib/use/express";
 import path from 'path';
 import favicon from "serve-favicon";
 import rootValue from "./graphql/root";
+import stringify from "./utils/circularJSON";
 
 const app = express();
 
@@ -69,26 +70,29 @@ app.all("/graphql", createHandler({ schema, rootValue }));
 
 app.get("/:page", (req: Request, res: Response) => {
    res.send(`
-<html>
+<!DOCTYPE html>
+<html lang="en">
    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${process.env.TITLE}</title>
+      <script type="module" src="/static/lib/webpack/page.js"></script>
    </head>
    <body>
-      Express + TypeScript Server
-      <br>Params  :<br> ${JSON.stringify(req.params)}
-      <br>Query   :<br> ${JSON.stringify(req.query)}
-      <br>Headers :<br> ${JSON.stringify(req.headers)}
-      <br>Cookies :<br> ${JSON.stringify(req.cookies)}
-      <br>URL     :<br> ${JSON.stringify(req.url)}
-      <br>OURL    :<br> ${JSON.stringify(req.originalUrl)}
-      <br>BURL    :<br> ${JSON.stringify(req.baseUrl)}
-      <br>SECRET  :<br> ${JSON.stringify(req.secret)}
-      <br>SECURE  :<br> ${JSON.stringify(req.secure)}
+      <script>
+         document.addEventListener("DOMContentLoaded", function (event) {
+            // your page initialization code here
+            // the DOM will be available here
+            mountPage('${stringify(req)}', 'placeholder');
+         });
+      </script>
+      <div id="placeholder">&nbsp;</div>
    </body>
 </html>`);
 });
 
-const PORT: number = process.env.PORT ? +process.env.PORT : 3000;
-app.listen(PORT, '127.0.0.1', () => {
-   console.log(`[server]: Server is running at http://localhost:${PORT}`);
+const PORT: number = +process.env.PORT!;
+const HOST: string = process.env.HOST!;
+app.listen(PORT, HOST, () => {
+   console.log(`[server]: Server is running at http://${HOST}:${PORT}`);
 });
