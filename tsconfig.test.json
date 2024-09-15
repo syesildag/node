@@ -1,18 +1,4 @@
 {
-   "ts-node": {
-      "esm": true,
-      "swc": true,
-      "experimentalSpecifierResolution": "node",
-      "transpileOnly": true,
-      "files": true,
-      "compilerOptions": {
-         // compilerOptions specified here will override those declared below,
-         // but *only* in ts-node.  Useful if you want ts-node and tsc to use
-         // different options with a single tsconfig.json.
-         "module": "CommonJS",
-         "moduleResolution": "Node"
-      }
-   },
    "compilerOptions": {
       "target": "ES2022",
       "module": "CommonJS",       /* Specify what module code is generated. */
