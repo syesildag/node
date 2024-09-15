@@ -4,6 +4,9 @@
    <title>Graphiql</title>
    <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
    <script type="module" src="/static/lib/webpack/graphiql.js"></script>
+</head>
+
+<body>
    <script>
       document.addEventListener("DOMContentLoaded", function (event) {
          // your page initialization code here
@@ -11,9 +14,6 @@
          mountGraphiql('placeholder', '/graphql');
       });
    </script>
-</head>
-
-<body>
    <span id="placeholder" />
 </body>
 
