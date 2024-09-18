@@ -76,7 +76,7 @@ app.get("/:page", (req: Request, res: Response) => {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${process.env.TITLE}</title>
-      <script type="module" src="/static/lib/webpack/page.js"></script>
+      <script type="module" src="/static/lib/webpack/mountPage.js"></script>
    </head>
    <body>
       <script>

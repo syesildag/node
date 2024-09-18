@@ -3,7 +3,8 @@ import { GraphiQL } from "graphiql";
 import React from "react";
 import { createRoot } from "react-dom/client";
 
-export default function mount(placeholder: string, url: string) {
+(window as any).mountGraphiql = mountGraphiql;
+export default function mountGraphiql(placeholder: string, url: string) {
 
    let container = document.getElementById(placeholder);
    if (container) {
