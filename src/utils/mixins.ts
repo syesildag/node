@@ -1,8 +1,8 @@
-export interface Constructor<T> {
-   new(...args: Array<any>): T;
+export interface Constructor<A extends any[] = any[], T = any> {
+   new(...args: A): T;
 }
 
-export function Named<T extends Constructor<any>>(Base: T) {
+export function Named<T extends Constructor>(Base: T) {
    return class extends Base {
       private _name: string | undefined;
       constructor(...args: any[]) {

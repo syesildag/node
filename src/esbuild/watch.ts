@@ -1,16 +1,21 @@
 import * as esbuild from 'esbuild'
-import {getAbsoluteFileNamesFromDirSync} from '../utils/fileNames';
+import { getAbsoluteFileNamesFromDirSync } from '../utils/fileNames';
 
 async function main() {
-   const fileNames = getAbsoluteFileNamesFromDirSync('src/static/lib/webpack');
-   const ctx = await esbuild.context({
-      entryPoints: fileNames,
-      outdir: 'dist/static/lib/webpack',
-      bundle: true,
-   });
+   [
+      'static/lib/webpack',
+      'static/lib/webpack/pages'
+   ].forEach(async (dir) => {
+      const fileNames = getAbsoluteFileNamesFromDirSync('src/' + dir);
+      const ctx = await esbuild.context({
+         entryPoints: fileNames,
+         outdir: 'dist/' + dir,
+         bundle: true,
+      });
 
-   await ctx.watch();
-   console.log('watching...');
+      await ctx.watch();
+      console.log('watching ' + dir);
+   });
 }
 
 main();

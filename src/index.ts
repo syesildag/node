@@ -9,6 +9,7 @@ import path from 'path';
 import favicon from "serve-favicon";
 import rootValue from "./graphql/root";
 import stringify from "./utils/circularJSON";
+import { capitalize } from "./utils/string";
 
 const app = express();
 
@@ -69,6 +70,8 @@ const schema = buildSchema(
 app.all("/graphql", createHandler({ schema, rootValue }));
 
 app.get("/:page", (req: Request, res: Response) => {
+   const page = req.params.page;
+   const Page = capitalize(page);
    res.send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -76,14 +79,15 @@ app.get("/:page", (req: Request, res: Response) => {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${process.env.TITLE}</title>
-      <script type="module" src="/static/lib/webpack/mountPage.js"></script>
+      <script type="module" src="/static/lib/webpack/pages/${page}.js"></script>
    </head>
    <body>
       <script>
          document.addEventListener("DOMContentLoaded", function (event) {
             // your page initialization code here
             // the DOM will be available here
-            mountPage('${stringify(req)}', 'placeholder');
+            const request = ${stringify(req)};
+            reactComponent.mount(request, 'placeholder', window['reactComponent${Page}']);
          });
       </script>
       <div id="placeholder">&nbsp;</div>

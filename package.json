@@ -6,7 +6,6 @@
    "scripts": {
       "clean": "rm -fr dist;rm -fr deploy",
       "generate-sea": "npm run build;npx esbuild dist/index.js --bundle --platform=node --outfile=deploy/index.js;node --experimental-sea-config sea-config.json;cp $(which node) deploy/index; npx postject deploy/index NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2;cp -r -t deploy dist/static;cp -t deploy dist/schema.graphql;rm deploy/index.js",
-      "dts": "node dist/src/dts.js",
       "start": "node dist/index.js",
       "compile": "tsc",
       "build": "npm run clean;npm run compile;cp schema.graphql dist/schema.graphql;cp -r -t dist src/static;rm -fr dist/static/lib/webpack;node dist/esbuild/prod.js",
@@ -33,7 +32,6 @@
       "esbuild": "0.23.1",
       "jest": "^28.1.3",
       "postject": "^1.0.0-alpha.6",
-      "react-refresh": "^0.14.2",
       "ts-jest": "^28.0.8",
       "ts-jest-resolver": "^2.0.0",
       "ts-loader": "^9.5.1",
@@ -42,6 +40,7 @@
    "dependencies": {
       "@tensorflow-models/mobilenet": "^2.1.1",
       "@tensorflow/tfjs-node": "^4.20.0",
+      "@uiw/react-json-view": "^2.0.0-alpha.27",
       "compression": "^1.7.4",
       "cookie-parser": "^1.4.6",
       "dotenv": "^16.4.5",
