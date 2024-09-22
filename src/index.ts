@@ -73,8 +73,10 @@ app.all("/graphql", createHandler({ schema, rootValue }));
 app.get("/:page", (req: Request, res: Response) => {
    const page = req.params.page;
 
-   if(!PAGES.has(page))
+   if(!PAGES.has(page)) {
       res.redirect('/home');
+      return;
+   }
 
    const Page = capitalize(page);
    res.send(`
