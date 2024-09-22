@@ -1,4 +1,4 @@
-import React, { ComponentClass, FunctionComponent } from "react";
+import React, { ComponentClass } from "react";
 import { createRoot } from "react-dom/client";
 
 export interface Props {
