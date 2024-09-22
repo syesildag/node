@@ -1,7 +1,7 @@
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
-import express, { NextFunction, Request, Response } from "express";
+import express, { NextFunction, Request, response, Response } from "express";
 import fs from 'fs';
 import { buildSchema } from "graphql";
 import { createHandler } from "graphql-http/lib/use/express";
@@ -10,6 +10,7 @@ import favicon from "serve-favicon";
 import rootValue from "./graphql/root";
 import stringify from "./utils/circularJSON";
 import { capitalize } from "./utils/string";
+import { getFileNamesFromDir } from "./utils/fileNames";
 
 const app = express();
 
@@ -71,6 +72,10 @@ app.all("/graphql", createHandler({ schema, rootValue }));
 
 app.get("/:page", (req: Request, res: Response) => {
    const page = req.params.page;
+
+   if(!PAGES.has(page))
+      res.redirect('/home');
+
    const Page = capitalize(page);
    res.send(`
 <!DOCTYPE html>
@@ -79,7 +84,7 @@ app.get("/:page", (req: Request, res: Response) => {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${process.env.TITLE}</title>
-      <script type="module" src="/static/lib/webpack/pages/${page}.js"></script>
+      <script type="module" src="/static/lib/bundle/pages/${page}.js"></script>
    </head>
    <body>
       <script>
@@ -95,8 +100,13 @@ app.get("/:page", (req: Request, res: Response) => {
 </html>`);
 });
 
+const PAGE_PROMISES = getFileNamesFromDir(path.join(__dirname, 'static/lib/bundle/pages'));
+let PAGES = new Set<string>();
+
 const PORT: number = +process.env.PORT!;
 const HOST: string = process.env.HOST!;
-app.listen(PORT, HOST, () => {
+app.listen(PORT, HOST, async () => {
    console.log(`[server]: Server is running at http://${HOST}:${PORT}`);
+   const pages = (await PAGE_PROMISES).map(file => file.name.substring(0, file.name.lastIndexOf('.')));
+   PAGES = new Set<string>(pages);
 });

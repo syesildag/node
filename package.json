@@ -8,7 +8,7 @@
       "generate-sea": "npm run build;npx esbuild dist/index.js --bundle --platform=node --outfile=deploy/index.js;node --experimental-sea-config sea-config.json;cp $(which node) deploy/index; npx postject deploy/index NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2;cp -r -t deploy dist/static;cp -t deploy dist/schema.graphql;rm deploy/index.js",
       "start": "node dist/index.js",
       "compile": "tsc",
-      "build": "npm run clean;npm run compile;cp schema.graphql dist/schema.graphql;cp -r -t dist src/static;rm -fr dist/static/lib/webpack;node dist/esbuild/prod.js",
+      "build": "npm run clean;npm run compile;cp schema.graphql dist/schema.graphql;cp -r -t dist src/static;rm -fr dist/static/lib/bundle;node dist/esbuild/prod.js",
       "buildAndStart": "npm run build && npm start",
       "test": "jest",
       "codegen": "graphql-codegen-esm --config codegen.ts"

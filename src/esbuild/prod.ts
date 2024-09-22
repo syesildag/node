@@ -3,8 +3,8 @@ import { getAbsoluteFileNamesFromDirSync } from '../utils/fileNames';
 
 function main() {
    [
-      'static/lib/webpack',
-      'static/lib/webpack/pages'
+      'static/lib/bundle',
+      'static/lib/bundle/pages'
    ].forEach(async (dir) => {
       const fileNames = getAbsoluteFileNamesFromDirSync('src/' + dir);
       console.log(`esbuild: ${fileNames}`);
