@@ -10,6 +10,7 @@ import favicon from "serve-favicon";
 import rootValue from "./graphql/root";
 import stringify from "./utils/circularJSON";
 import { getFileNamesFromDir } from "./utils/fileNames";
+import schedule from "node-schedule";
 
 const app = express();
 
@@ -113,8 +114,39 @@ let PAGES = new Set<string>();
 
 const PORT: number = +process.env.PORT!;
 const HOST: string = process.env.HOST!;
-app.listen(PORT, HOST, async () => {
+const server = app.listen(PORT, HOST, async () => {
    console.log(`[server]: Server is running at http://${HOST}:${PORT}`);
    const pages = (await PAGE_PROMISES).map(file => file.name.substring(0, file.name.lastIndexOf('.')));
    PAGES = new Set<string>(pages);
 });
+
+process.on('SIGTERM', gracefulShutdown);
+
+process.on('SIGINT', gracefulShutdown);
+
+function gracefulShutdown(event: NodeJS.Signals) {
+
+   let scheduler = schedule.gracefulShutdown();
+
+   console.log(`${event} signal received.`);
+
+   console.log('Shutting down gracefully...');
+
+   server.close(async (err?: Error) => {
+      console.log(`Server closed with ${err ?? 'Success'}`);
+      // Close any other connections or resources here
+      await scheduler;
+      process.exit(0);
+   });
+
+   setTimeout(() => {
+      console.error('Could not close connections in time, forcefully shutting down');
+      process.exit(1);
+   }, +process.env.SERVER_TERMINATE_TIMEOUT!);
+}
+
+// const rule = new schedule.RecurrenceRule();
+// rule.second = new schedule.Range(0, 60, 5);
+// const watchDog = schedule.scheduleJob(rule, () => {
+//    console.log("watchDog");
+// });
