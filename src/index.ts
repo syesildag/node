@@ -71,6 +71,7 @@ const schema = buildSchema(
 app.all("/graphql", createHandler({ schema, rootValue }));
 
 app.get("/:page", (req: Request, res: Response) => {
+
    const page = req.params.page;
 
    if(!PAGES.has(page)) {
@@ -78,7 +79,8 @@ app.get("/:page", (req: Request, res: Response) => {
       return;
    }
 
-   const Page = capitalize(page);
+   const pageScript = `/static/lib/bundle/pages/${page}.js`;
+
    res.send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -86,18 +88,23 @@ app.get("/:page", (req: Request, res: Response) => {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${process.env.TITLE}</title>
-      <script type="module" src="/static/lib/bundle/pages/${page}.js"></script>
+      <script type="module">
+        import page from '.${pageScript}';
+        window.reactPageComponent = page;
+      </script>
+      <script type="module" src="${pageScript}"></script>
    </head>
    <body>
+      <noscript>
+         Your browser does not support JavaScript or it is turned off
+      </noscript>
       <script>
          document.addEventListener("DOMContentLoaded", function (event) {
-            // your page initialization code here
-            // the DOM will be available here
             const request = ${stringify(req)};
-            reactComponent.mount(request, 'placeholder', window['reactComponent${Page}']);
+            reactPageComponent.mount({request}, 'placeholder', reactPageComponent);
          });
       </script>
-      <div id="placeholder">&nbsp;</div>
+      <div id="placeholder"/>
    </body>
 </html>`);
 });

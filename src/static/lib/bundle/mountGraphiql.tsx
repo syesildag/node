@@ -1,22 +1,19 @@
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { CreateFetcherOptions, createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from "graphiql";
 import React from "react";
-import { createRoot } from "react-dom/client";
+import Page from '../../../react/page';
 
 (window as any).mountGraphiql = mountGraphiql;
 export default function mountGraphiql(placeholder: string, url: string) {
+   Page.mount({url}, placeholder, graphiql);
+}
 
-   let container = document.getElementById(placeholder);
-   if (container) {
-      const root = createRoot(container);
-      root.render(<GraphiQL
-         fetcher={createGraphiQLFetcher({ url })}
-         defaultQuery={defaultQuery}
-         variables={defaultVariables}
-      />);
-   }
-   else
-      console.error(`Element with id ${placeholder} not found.`);
+function graphiql(options: CreateFetcherOptions) {
+  return <GraphiQL
+    fetcher={createGraphiQLFetcher(options)}
+    defaultQuery={defaultQuery}
+    variables={defaultVariables}
+  />;
 }
 
 // noinspection JSUnusedLocalSymbols

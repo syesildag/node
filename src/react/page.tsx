@@ -1,4 +1,4 @@
-import React, { ComponentClass } from "react";
+import React, { ComponentClass, FunctionComponent } from "react";
 import { createRoot } from "react-dom/client";
 
 export interface Props {
@@ -7,12 +7,12 @@ export interface Props {
 
 export default abstract class Page extends React.Component<Props> {
 
-   public static mount(request: any, placeholder: string, component: ComponentClass<Props>) {
+   public static mount<P extends {} = any>(props: P, placeholder: string, component: FunctionComponent<P> | ComponentClass<P>) {
       let container = document.getElementById(placeholder);
       if (container) {
          const root = createRoot(container);
          if (component)
-            root.render(React.createElement(component, { request }));
+            root.render(React.createElement(component, props));
          else
             root.render(<h1>Component not found.</h1>);
       }
@@ -20,5 +20,3 @@ export default abstract class Page extends React.Component<Props> {
          console.error(`Element with id ${placeholder} not found.`);
    }
 }
-
-(window as any).reactComponent = Page;

@@ -1,6 +1,6 @@
 import React from "react";
-import Page from "../components/page";
 import JsonView from '@uiw/react-json-view';
+import Page from "../../../../react/page";
 
 export default class Home extends Page {
 
@@ -13,5 +13,3 @@ export default class Home extends Page {
       );
    }
 }
-
-(window as any).reactComponentHome = Home;
