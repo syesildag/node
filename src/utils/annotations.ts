@@ -1,4 +1,4 @@
-export interface Constructor<A extends any[], T> {
+export interface Constructor<T, A extends any[] = any[]> {
    new(...args: A): T;
 }
 

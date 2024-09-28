@@ -5,12 +5,14 @@ import express, { NextFunction, Request, Response } from "express";
 import fs from 'fs';
 import { buildSchema } from "graphql";
 import { createHandler } from "graphql-http/lib/use/express";
+import schedule from "node-schedule";
 import path from 'path';
 import favicon from "serve-favicon";
 import rootValue from "./graphql/root";
 import stringify from "./utils/circularJSON";
-import { getFileNamesFromDir } from "./utils/fileNames";
-import schedule from "node-schedule";
+import { getAbsoluteFileNamesFromDir, getFileNamesFromDir } from "./utils/fileNames";
+import JobFactory from "./utils/jobFactory";
+import { Constructor } from "./utils/annotations";
 
 const app = express();
 
@@ -74,7 +76,7 @@ app.get("/:page", (req: Request, res: Response) => {
 
    const page = req.params.page;
 
-   if(!PAGES.has(page)) {
+   if (!PAGES.has(page)) {
       res.redirect('/home');
       return;
    }
@@ -145,8 +147,15 @@ function gracefulShutdown(event: NodeJS.Signals) {
    }, +process.env.SERVER_TERMINATE_TIMEOUT!);
 }
 
-// const rule = new schedule.RecurrenceRule();
-// rule.second = new schedule.Range(0, 60, 5);
-// const watchDog = schedule.scheduleJob(rule, () => {
-//    console.log("watchDog");
-// });
+async function scheduleJobs() {
+   const JOBS = await getAbsoluteFileNamesFromDir(path.join(__dirname, 'jobs'));
+   JOBS
+      .filter(file => file.endsWith('.js'))
+      .forEach(async (file) => {
+         const module = await import(file);
+         const jobFactory: JobFactory = new (module.default as Constructor<JobFactory>);
+         jobFactory.create();
+      });
+}
+
+scheduleJobs();
