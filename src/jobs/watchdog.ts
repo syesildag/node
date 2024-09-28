@@ -10,8 +10,8 @@ export default class Hello extends JobFactory {
    }
 
    protected getJobCallback() {
-      return () => {
-         console.log("watchDog");
+      return (fireDate: Date) => {
+         console.log("watchDog: " + fireDate);
       }
    }
 }
