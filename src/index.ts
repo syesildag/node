@@ -1,7 +1,7 @@
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
-import express, { NextFunction, Request, response, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import fs from 'fs';
 import { buildSchema } from "graphql";
 import { createHandler } from "graphql-http/lib/use/express";
@@ -9,7 +9,6 @@ import path from 'path';
 import favicon from "serve-favicon";
 import rootValue from "./graphql/root";
 import stringify from "./utils/circularJSON";
-import { capitalize } from "./utils/string";
 import { getFileNamesFromDir } from "./utils/fileNames";
 
 const app = express();
