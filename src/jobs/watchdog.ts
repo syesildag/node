@@ -1,7 +1,7 @@
 import { Range, RecurrenceRule } from "node-schedule";
 import JobFactory from "../utils/jobFactory";
 
-export default class Hello extends JobFactory {
+export default class Watchdog extends JobFactory {
 
    protected getSpec() {
       const rule = new RecurrenceRule();
