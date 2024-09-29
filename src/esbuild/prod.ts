@@ -17,7 +17,9 @@ function main() {
          splitting: true,
          format: 'esm',
          platform: 'browser',
-         target: 'es2022'
+         target: 'es2022',
+         tsconfig: 'tsconfig.json',
+         chunkNames: 'chunks/[name]-[hash]',
       });
 
       result.errors.forEach(error => {
