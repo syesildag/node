@@ -92,7 +92,7 @@ app.get("/:page", (req: Request, res: Response) => {
       <title>${process.env.TITLE}</title>
       <script type="module">
         import page from '.${pageScript}';
-        window.reactPageComponent = page;
+        window.reactComponent = page;
       </script>
       <script type="module" src="${pageScript}"></script>
    </head>
@@ -103,7 +103,7 @@ app.get("/:page", (req: Request, res: Response) => {
       <script>
          document.addEventListener("DOMContentLoaded", function (event) {
             const request = ${stringify(req)};
-            reactPageComponent.mount({request}, 'placeholder', reactPageComponent);
+            reactComponent.mount({request}, 'placeholder', reactComponent);
          });
       </script>
       <div id="placeholder"/>

@@ -29,7 +29,7 @@ async function main() {
    console.log("b: " + prettyFormat.format(b));
    console.log("diff: " + diff(a, b));
 
-   let manager = new WorkerPoolManager<Task, number>(squareWorker);
+   let manager = new WorkerPoolManager<Task, number>(squareWorker, { name: "squareWorker" }, os.availableParallelism());
    const tasks =
       [...range(0, 100)]
          .map(i => {
