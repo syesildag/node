@@ -90,20 +90,17 @@ app.get("/:page", (req: Request, res: Response) => {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${process.env.TITLE}</title>
-      <script type="module">
-        import page from '.${pageScript}';
-        window.reactComponent = page;
-      </script>
       <script type="module" src="${pageScript}"></script>
    </head>
    <body>
       <noscript>
          Your browser does not support JavaScript or it is turned off
       </noscript>
-      <script>
+      <script type="module">
+         import component from '.${pageScript}';
          document.addEventListener("DOMContentLoaded", function (event) {
             const request = ${stringify(req)};
-            reactComponent.mount({request}, 'placeholder', reactComponent);
+            component.mount({request}, 'placeholder', component);
          });
       </script>
       <div id="placeholder"/>
