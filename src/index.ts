@@ -73,6 +73,10 @@ const schema = buildSchema(
 // Create and use the GraphQL handler.
 app.all("/graphql", createHandler({ schema, rootValue }));
 
+app.post("/:page", (req: Request, res: Response) => {
+   res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(req.body));
+});
+
 app.get("/:page", (req: Request, res: Response) => {
 
    const page = req.params.page;
