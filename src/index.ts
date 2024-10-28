@@ -13,6 +13,7 @@ import stringify from "./utils/circularJSON";
 import { getAbsoluteFileNamesFromDir, getFileNamesFromDir } from "./utils/fileNames";
 import JobFactory from "./utils/jobFactory";
 import { Constructor } from "./utils/annotations";
+import { Socket } from "net";
 
 const app = express();
 
@@ -119,6 +120,16 @@ const server = app.listen(PORT, HOST, async () => {
    PAGES = new Set<string>(pages);
 });
 
+let connections: Array<Socket> = [];
+server.on('connection', connection => {
+   connections.push(connection);
+   connection.on('close', hadError => {
+      if(hadError)
+         console.error('Socket closed with an error');
+      connections = connections.filter(curr => curr !== connection)
+   });
+});
+
 process.on('SIGTERM', gracefulShutdown);
 
 process.on('SIGINT', gracefulShutdown);
@@ -131,6 +142,11 @@ function gracefulShutdown(event: NodeJS.Signals) {
 
    console.log('Shutting down gracefully...');
 
+   connections.forEach(connection => {
+      console.log(`Closing active connection ${connection.remoteAddress}:${connection.remotePort}`);
+      connection.end();
+   });
+
    server.close(async (err?: Error) => {
       console.log(`Server closed with ${err ?? 'Success'}`);
       // Close any other connections or resources here
@@ -140,6 +156,7 @@ function gracefulShutdown(event: NodeJS.Signals) {
 
    setTimeout(() => {
       console.error('Could not close connections in time, forcefully shutting down');
+      connections.forEach(curr => curr.destroy());
       process.exit(1);
    }, +process.env.SERVER_TERMINATE_TIMEOUT!);
 }
