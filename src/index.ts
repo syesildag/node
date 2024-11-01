@@ -29,7 +29,7 @@ function shouldCompress(req: express.Request, res: express.Response) {
 }
 
 // load the cookie-parsing middleware
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // Serve static files
 app.use('/static', express.static(path.join(__dirname, 'static'), {
@@ -86,6 +86,14 @@ app.get("/:page", (req: Request, res: Response) => {
       return;
    }
 
+   res.cookie('serkan', 'yesildag', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      signed: true
+   });
+
    const pageScript = `/static/lib/bundle/pages/${page}.js`;
 
    res.send(`
@@ -94,6 +102,7 @@ app.get("/:page", (req: Request, res: Response) => {
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
       <title>${process.env.TITLE}</title>
       <script type="module" src="${pageScript}"></script>
    </head>
