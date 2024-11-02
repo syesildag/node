@@ -1,10 +1,12 @@
-import React, { FormEvent } from "react";
 import Button from '@mui/material/Button';
+import Grid2 from '@mui/material/Grid2';
+import React, { FormEvent } from "react";
 import Page from "../../../../react/page";
+import ThemeContainer from '../../../../react/themeContainer';
 
 export default class Test extends Page {
 
-   private handleSubmit = async(event: FormEvent<HTMLFormElement>) => {
+   private handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const target = event.target as HTMLFormElement;
       const data = new FormData(target);
@@ -33,21 +35,30 @@ export default class Test extends Page {
    }
 
    render() {
-      return (<>
-         <a href="/test">Reload</a>
-         <form method="post" onSubmit={this.handleSubmit}
-            style={{
-               display: "flex",
-               flexDirection: "column", alignItems: "flex-start"
-            }}>
-            <input type="hidden" name="secret" value={this.props.request.secret} />
-            <label htmlFor="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" />
-            <label htmlFor="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" />
-            <Button type="submit" variant="contained">Submit</Button>
-         </form>
-      </>
+      return (
+         <ThemeContainer>
+            <a href="/test">Reload</a>
+            <form method="post" onSubmit={this.handleSubmit}>
+               <input type="hidden" name="secret" value={this.props.request.secret} />
+               <Grid2 container spacing={2}>
+                  <Grid2 size={1}>
+                     <label htmlFor="firstName">First Name:</label>
+                  </Grid2>
+                  <Grid2 size={11}>
+                     <input type="text" id="firstName" name="firstName" />
+                  </Grid2>
+                  <Grid2 size={1}>
+                     <label htmlFor="lastName">Last Name:</label>
+                  </Grid2>
+                  <Grid2 size={11}>
+                     <input type="text" id="lastName" name="lastName" />
+                  </Grid2>
+                  <Grid2 size={12}>
+                     <Button type="submit" variant="contained">Submit</Button>
+                  </Grid2>
+               </Grid2>
+            </form>
+         </ThemeContainer>
       );
    }
 }
