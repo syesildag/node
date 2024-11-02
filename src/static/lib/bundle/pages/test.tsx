@@ -1,4 +1,5 @@
 import React, { FormEvent } from "react";
+import Button from '@mui/material/Button';
 import Page from "../../../../react/page";
 
 export default class Test extends Page {
@@ -44,7 +45,7 @@ export default class Test extends Page {
             <input type="text" id="firstName" name="firstName" />
             <label htmlFor="lastName">Last Name:</label>
             <input type="text" id="lastName" name="lastName" />
-            <input type="submit" />
+            <Button type="submit" variant="contained">Submit</Button>
          </form>
       </>
       );
