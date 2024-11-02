@@ -1,7 +1,7 @@
-import React from "react";
-import JsonView from '@uiw/react-json-view';
+import React, { lazy } from "react";
 import Page from "../../../../react/page";
 import ThemeContainer from "../../../../react/themeContainer";
+const JsonView = lazy(() => import('@uiw/react-json-view'));
 
 export default class Home extends Page {
    render() {
