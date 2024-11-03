@@ -37,20 +37,20 @@ export default class Test extends Page {
    render() {
       return (
          <ThemeContainer>
-            <a href="/test">Reload</a>
+            <a href="/form">Reset</a>
             <form method="post" onSubmit={this.handleSubmit}>
                <input type="hidden" name="secret" value={this.props.request.secret} />
                <Grid2 container spacing={2}>
-                  <Grid2 size={1}>
+                  <Grid2 size={'auto'}>
                      <label htmlFor="firstName">First Name:</label>
                   </Grid2>
-                  <Grid2 size={11}>
+                  <Grid2 size={'grow'}>
                      <input type="text" id="firstName" name="firstName" />
                   </Grid2>
-                  <Grid2 size={1}>
+                  <Grid2 size={'auto'}>
                      <label htmlFor="lastName">Last Name:</label>
                   </Grid2>
-                  <Grid2 size={11}>
+                  <Grid2 size={'grow'}>
                      <input type="text" id="lastName" name="lastName" />
                   </Grid2>
                   <Grid2 size={12}>
