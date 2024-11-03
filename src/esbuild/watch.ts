@@ -8,4 +8,6 @@ async function main(dir: string, fileNames: string[], options: esbuild.BuildOpti
    const ctx = await esbuild.context(options);
 
    await ctx.watch();
+
+   console.log('Watching for changes in directory:', dir);
 }

@@ -11,7 +11,6 @@
       "compile": "tsc",
       "build": "npm run clean;npm run compile;cp schema.graphql dist/schema.graphql;cp -r -t dist src/static;rm -fr dist/static/lib/bundle;node dist/esbuild/prod.js",
       "buildStart": "npm run build && npm start",
-      "buildStartWatch": "npm run buildStart && npm run watch",
       "test": "jest",
       "codegen": "graphql-codegen-esm --config codegen.ts"
    },
