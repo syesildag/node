@@ -96,6 +96,12 @@ app.get("/:page", (req: Request, res: Response) => {
 
    const pageScript = `/static/lib/bundle/pages/${page}.js`;
 
+   let linkCss = "";
+   if(PAGES.has(`${page}.css`)) {
+      const cssScript = `/static/lib/bundle/pages/${page}.css`;
+      linkCss = `<link rel="stylesheet" href="${cssScript}"/>`;
+   }
+
    res.send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -109,6 +115,7 @@ app.get("/:page", (req: Request, res: Response) => {
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
       <title>${process.env.TITLE}</title>
       <script type="module" src="${pageScript}"></script>
+      ${linkCss}
    </head>
    <body>
       <noscript>

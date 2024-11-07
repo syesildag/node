@@ -10,7 +10,7 @@ export interface Props {
 export interface HandleSubmitOptions {
    redirect: string;
    onBeforeRedirect?: () => void;
-   onError?: (error: Error) => void;
+   onError?: (error: unknown) => void;
 }
 
 export default abstract class Page extends React.Component<Props> {
@@ -37,7 +37,7 @@ export default abstract class Page extends React.Component<Props> {
       const form = event.target as HTMLFormElement;
       const formData = new FormData(form);
 
-      const request = {};
+      const request: Record<string, FormDataEntryValue> = {};
       for (const [key, value] of formData.entries())
          request[key] = value;
 
