@@ -57,47 +57,47 @@ export default class Test extends Page {
                         <li><span>High School</span><small>Henry M. Jackson High School</small><small>Jan. 2013 - Jun. 2015</small></li>
                      </ul>
                   </div>
-                  <div className="skills-prog">
+                  <div className={styles['skills-prog']}>
                      <h3><i className="fas fa-code"></i>Programming Skills</h3>
                      <ul>
                         <li data-percent="95"><span>HTML5</span>
-                           <div className="skills-bar">
+                           <div className={styles['skills-bar']}>
                               <div className={styles.bar}></div>
                            </div>
                         </li>
                         <li data-percent="90"><span>CSS3 & SCSS</span>
-                           <div className="skills-bar">
+                           <div className={styles['skills-bar']}>
                               <div className={styles.bar}></div>
                            </div>
                         </li>
                         <li data-percent="60"><span>JavaScript</span>
-                           <div className="skills-bar">
+                           <div className={styles['skills-bar']}>
                               <div className={styles.bar}></div>
                            </div>
                         </li>
                         <li data-percent="50"><span>jQuery</span>
-                           <div className="skills-bar">
+                           <div className={styles['skills-bar']}>
                               <div className={styles.bar}></div>
                            </div>
                         </li>
                         <li data-percent="40"><span>JSON</span>
-                           <div className="skills-bar">
+                           <div className={styles['skills-bar']}>
                               <div className={styles.bar}></div>
                            </div>
                         </li>
                         <li data-percent="55"><span>PHP</span>
-                           <div className="skills-bar">
+                           <div className={styles['skills-bar']}>
                               <div className={styles.bar}></div>
                            </div>
                         </li>
                         <li data-percent="40"><span>MySQL</span>
-                           <div className="skills-bar">
+                           <div className={styles['skills-bar']}>
                               <div className={styles.bar}></div>
                            </div>
                         </li>
                      </ul>
                   </div>
-                  <div className="skills-soft">
+                  <div className={styles['skills-soft']}>
                      <h3><i className="fas fa-bezier-curve"></i>Software Skills</h3>
                      <ul>
                         <li data-percent="90">
@@ -128,7 +128,7 @@ export default class Test extends Page {
                   </div>
                   <div className={styles.interests}>
                      <h3><i className="fas fa-star"></i>Interests</h3>
-                     <div className="interests-items">
+                     <div className={styles['interests-items']}>
                         <div className={styles.art}><i className="fas fa-palette"></i><span>Art</span></div>
                         <div className={styles.art}><i className="fas fa-book"></i><span>Books</span></div>
                         <div className={styles.movies}><i className="fas fa-film"></i><span>Movies</span></div>
