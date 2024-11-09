@@ -7,8 +7,6 @@ Object.defineProperty(global, 'performance', {
 
 jest.useFakeTimers();
 
-type Value = { title?: string };
-
 let globalTitle: string = "";
 
 function echo(title: string) {
