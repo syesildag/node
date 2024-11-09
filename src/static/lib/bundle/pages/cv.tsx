@@ -1,24 +1,95 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Page from "../../../../react/page";
 import styles from "../../../styles/cv.module.css";
 
-export default class Test extends Page {
+/*
+(function() {
+  $(".skills-soft li")
+    .find("svg")
+    .each(function(i) {
+      var c, cbar, circle, percent, r;
+      circle = $(this).children(".cbar");
+      r = circle.attr("r");
+      c = Math.PI * (r * 2);
+      percent = $(this)
+        .parent()
+        .data("percent");
+      cbar = (100 - percent) / 100 * c;
+      circle.css({
+        "stroke-dashoffset": c,
+        "stroke-dasharray": c
+      });
+      circle.delay(i * 150).animate(
+        {
+          strokeDashoffset: cbar
+        },
+        1000,
+        "linear",
+        function() {
+          return circle.css({
+            "transition-duration": ".3s"
+          });
+        }
+      );
+      $(this)
+        .siblings("small")
+        .prop("Counter", 0)
+        .delay(i * 150)
+        .animate(
+          {
+            Counter: percent
+          },
+          {
+            duration: 1000,
+            step: function(now) {
+              return $(this).text(Math.ceil(now) + "%");
+            }
+          }
+        );
+    });
+}.call(this));
+*/
+
+interface SkillBarProps {
+   percent: number;
+   name: string;
+}
+
+function SkillBar({ percent, name }: SkillBarProps) {
+   const [width, setWidth] = useState(0);
+   useEffect(() => {
+      setWidth(percent);
+   }, [percent]);
+   return (
+      <li><span>{name}</span>
+         <div className={styles['skills-bar']}>
+            <div style={{
+               width: width + "%",
+               transition: 'width 1s',
+            }} className={styles.bar} />
+         </div>
+      </li>
+   );
+}
+
+export default class Cv extends Page {
    render() {
       return super.render(
          <>
             <div className={styles.resume}>
                <div className={styles.base}>
                   <div className={styles.profile}>
-                     <div className={styles.photo}>
-                        <i className="fas fa-rocket"></i>
-                     </div>
                      <div className={styles.info}>
-                        <h1 className={styles.name}>Naomi Weatherford</h1>
-                        <h2 className={styles.job}>Frontend Web Designer</h2>
+                        <h1 className={styles.name}>Serkan YESILDAG</h1>
+                        <h2 className={styles.job}>Software Engineer</h2>
                      </div>
                   </div>
                   <div className={styles.about}>
-                     <h3>About Me</h3>I'm a web designer for Fiserv, specializing in web design, graphic design, and UX. Experienced with the Adobe Creative Suite, responsive design, social media management, and prototyping.
+                     <h3>About Him</h3>
+                     He is a software engineer having an experience of more than 10 years in the field of software development.
+                     He is a full-stack developer with hands-on experience in developing web applications and standalone applications.
+                     He is a tech enthusiast and always eager to learn new technologies.
+                     He is a quick learner and always ready to take new challenges.
                   </div>
                   <div className={styles.contact}>
                      <h3>Contact Me</h3>
@@ -44,57 +115,27 @@ export default class Test extends Page {
                   <div className={styles.work}>
                      <h3><i className="fa fa-briefcase"></i>Experience</h3>
                      <ul>
-                        <li><span>Technical Consultant -<br />Web Design</span><small>Fiserv</small><small>Apr 2018 - Now</small></li>
-                        <li><span>Web Designer</span><small>Lynden</small><small>Jan 2018 - Apr 2018</small></li>
-                        <li><span>Intern - Web Design</span><small>Lynden</small><small>Aug 2017 - Dec 2017</small></li>
+                        <li><span>Software Enginner -<br /></span><small>Septeo-FRANCE</small><small>Sep 2023 - Now</small></li>
+                        <li><span>Software Enginner</span><small>Sequoiasoft-FRANCE</small><small>Apr 2010 - Sep 2023</small></li>
+                        <li><span>Software Enginner</span><small>SoftBooking-FRANCE</small><small>May 2007 - Apr 2010</small></li>
+                        <li><span>Freelance Software Engineer</span><small>France</small><small>Jun 2002 - May 2007</small></li>
                      </ul>
                   </div>
                   <div className={styles.edu}>
                      <h3><i className="fa fa-graduation-cap"></i>Education</h3>
                      <ul>
-                        <li><span>Bachelor of Science<br />Web Design and Development</span><small>BYU-Idaho</small><small>Jan. 2016 - Apr. 2018</small></li>
-                        <li><span>Computer Science</span><small>Edmonds Community College</small><small>Sept. 2014 - Dec. 2015</small></li>
-                        <li><span>High School</span><small>Henry M. Jackson High School</small><small>Jan. 2013 - Jun. 2015</small></li>
+                        <li><span>PhD<br />EURECOM</span><small>Valbonne-FRANCE</small><small>Sep. 2001 - May. 2002</small></li>
+                        <li><span>Master of Science<br />Bilkent University</span><small>Ankara-TURKEY</small><small>Sep. 1999 - Jun. 2001</small></li>
+                        <li><span>Bachelor of Science<br />Bilkent University</span><small>Ankara-TURKEY</small><small>Sep. 1994 - Jun. 1999</small></li>
                      </ul>
                   </div>
                   <div className={styles['skills-prog']}>
                      <h3><i className="fas fa-code"></i>Programming Skills</h3>
                      <ul>
-                        <li data-percent="95"><span>HTML5</span>
-                           <div className={styles['skills-bar']}>
-                              <div className={styles.bar}></div>
-                           </div>
-                        </li>
-                        <li data-percent="90"><span>CSS3 & SCSS</span>
-                           <div className={styles['skills-bar']}>
-                              <div className={styles.bar}></div>
-                           </div>
-                        </li>
-                        <li data-percent="60"><span>JavaScript</span>
-                           <div className={styles['skills-bar']}>
-                              <div className={styles.bar}></div>
-                           </div>
-                        </li>
-                        <li data-percent="50"><span>jQuery</span>
-                           <div className={styles['skills-bar']}>
-                              <div className={styles.bar}></div>
-                           </div>
-                        </li>
-                        <li data-percent="40"><span>JSON</span>
-                           <div className={styles['skills-bar']}>
-                              <div className={styles.bar}></div>
-                           </div>
-                        </li>
-                        <li data-percent="55"><span>PHP</span>
-                           <div className={styles['skills-bar']}>
-                              <div className={styles.bar}></div>
-                           </div>
-                        </li>
-                        <li data-percent="40"><span>MySQL</span>
-                           <div className={styles['skills-bar']}>
-                              <div className={styles.bar}></div>
-                           </div>
-                        </li>
+                        <SkillBar percent={50} name="HTML" />
+                        <SkillBar percent={80} name="JavaScript" />
+                        <SkillBar percent={90} name="Java" />
+                        <SkillBar percent={70} name="SQL" />
                      </ul>
                   </div>
                   <div className={styles['skills-soft']}>
