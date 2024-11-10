@@ -9,7 +9,7 @@
       "watch": "node dist/esbuild/watch.js",
       "start": "node dist/index.js",
       "compile": "tsc",
-      "build": "npm run clean;npm run compile;cp schema.graphql dist/schema.graphql;cp -r -t dist src/static;rm -fr dist/static/styles;rm -fr dist/static/lib/bundle;node dist/esbuild/prod.js",
+      "build": "npm run clean;npm run compile;cp schema.graphql dist/schema.graphql;cp -r -t dist src/static;rm -fr dist/static/lib/bundle;node dist/esbuild/prod.js",
       "buildStart": "npm run build && npm start",
       "test": "jest",
       "codegen": "graphql-codegen-esm --config codegen.ts"
@@ -43,6 +43,7 @@
    "dependencies": {
       "@emotion/react": "^11.13.3",
       "@emotion/styled": "^11.13.0",
+      "@mui/icons-material": "^6.1.6",
       "@mui/material": "^6.1.6",
       "@tensorflow-models/mobilenet": "^2.1.1",
       "@tensorflow/tfjs-node": "^4.20.0",

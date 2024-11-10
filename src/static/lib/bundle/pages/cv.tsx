@@ -1,3 +1,11 @@
+import styled from "@emotion/styled";
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import WorkIcon from '@mui/icons-material/Work';
+import SchoolIcon from '@mui/icons-material/School';
+import CodeIcon from '@mui/icons-material/Code';
+import { SvgIconProps, SvgIconTypeMap } from "@mui/material";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
 import React, { useEffect, useState } from "react";
 import Page from "../../../../react/page";
 import styles from "../../../styles/cv.module.css";
@@ -50,6 +58,19 @@ import styles from "../../../styles/cv.module.css";
 }.call(this));
 */
 
+function createStyled<C extends OverridableComponent<SvgIconTypeMap>>(svgIcon: C) {
+   return styled(svgIcon)<SvgIconProps>(({ theme }) => ({
+      color: 'var(--color-yellow)',
+      verticalAlign: 'sub',
+   }));
+}
+
+const StyledPhoneIcon = createStyled(PhoneIcon);
+const StyledEmailIcon = createStyled(EmailIcon);
+const StyledWorkIcon = createStyled(WorkIcon);
+const StyledSchoolIcon = createStyled(SchoolIcon);
+const StyledCodeIcon = createStyled(CodeIcon);
+
 interface SkillBarProps {
    percent: number;
    name: string;
@@ -58,7 +79,7 @@ interface SkillBarProps {
 function SkillBar({ percent, name }: SkillBarProps) {
    const [width, setWidth] = useState(0);
    useEffect(() => {
-      setWidth(percent);
+      requestAnimationFrame(() => setWidth(percent));
    }, [percent]);
    return (
       <li><span>{name}</span>
@@ -86,34 +107,37 @@ export default class Cv extends Page {
                   </div>
                   <div className={styles.about}>
                      <h3>About Him</h3>
-                     He is a software engineer having an experience of more than 10 years in the field of software development.
-                     He is a full-stack developer with hands-on experience in developing web applications and standalone applications.
-                     He is a tech enthusiast and always eager to learn new technologies.
-                     He is a quick learner and always ready to take new challenges.
+                     <p>
+                        With over a decade of experience in software development, this individual has honed his skills as a full-stack developer, capable of crafting both web and standalone applications.
+                     </p>
+                     <p>
+                        His expertise extends to a wide range of programming languages and technologies, including Java, JavaScript, and SQL, among others.
+                     </p>
+                     <p>
+                        His enthusiasm for technology is not just a professional attribute but a personal passion, driving him to continuously explore and master new advancements in the field.
+                     </p>
+                     <p>
+                        This dedication to learning is complemented by an ability to quickly assimilate new information, making him well-equipped to tackle and triumph over new challenges that come his way.
+                     </p>
+                     <p>
+                        His career trajectory is a testament to his commitment to growth and excellence in the ever-evolving landscape of software engineering.
+                     </p>
                   </div>
                   <div className={styles.contact}>
                      <h3>Contact Me</h3>
-                     <div className={styles.call}><a href="tel:123-456-7890"><i className="fas fa-phone"></i><span>123-456-7890</span></a></div>
-                     <div className={styles.address}><a href="https://goo.gl/maps/fiTBGT6Vnhy"><i className="fas fa-map-marker"></i><span>Provo, Utah</span></a>
-                     </div>
-                     <div className={styles.email}><a href="mailto:astronaomical@gmail.com"><i className="fas fa-envelope"></i><span>astronaomical</span></a></div>
-                     <div className={styles.website}><a href="http://astronaomical.com/" target="_blank"> <i className="fas fa-home"></i><span>astronaomical.com</span></a></div>
+                     <div className={styles.call}><a href="tel:06.25.99.23.24"><StyledPhoneIcon/><span>06.25.99.23.24</span></a></div>
+                     <div className={styles.email}><a href="mailto:syesildag@hotmail.com"><StyledEmailIcon /><span>syesildag@hotmail.com</span></a></div>
                   </div>
                   <div className={styles.follow}>
                      <h3>Follow Me</h3>
                      <div className={styles.box}>
-                        <a href="https://www.facebook.com/astronaomical/" target="_blank"><i className="fab fa-facebook"></i></a>
-                        <a href="https://www.instagram.com/astronaomical/" target="_blank"><i className="fab fa-instagram "></i></a>
-                        <a href="https://www.pinterest.com/astronaomical/" target="_blank"><i className="fab fa-pinterest"></i></a>
-                        <a href="https://www.linkedin.com/in/naomi-weatherford-758385112/" target="_blank"><i className="fab fa-linkedin"></i></a>
-                        <a href="https://codepen.io/astronaomical/" target="_blank"><i className="fab fa-codepen"></i></a>
-                        <a href="https://www.behance.net/astronaomical" target="_blank"><i className="fab fa-behance"></i></a>
+                        <a href="https://www.linkedin.com/in/serkan-yesildag-816542314/" target="_blank"><i className="fab fa-linkedin"></i></a>
                      </div>
                   </div>
                </div>
                <div className={styles.func}>
                   <div className={styles.work}>
-                     <h3><i className="fa fa-briefcase"></i>Experience</h3>
+                     <h3><i><StyledWorkIcon /></i>Experience</h3>
                      <ul>
                         <li><span>Software Enginner -<br /></span><small>Septeo-FRANCE</small><small>Sep 2023 - Now</small></li>
                         <li><span>Software Enginner</span><small>Sequoiasoft-FRANCE</small><small>Apr 2010 - Sep 2023</small></li>
@@ -122,7 +146,7 @@ export default class Cv extends Page {
                      </ul>
                   </div>
                   <div className={styles.edu}>
-                     <h3><i className="fa fa-graduation-cap"></i>Education</h3>
+                     <h3><i><StyledSchoolIcon /></i>Education</h3>
                      <ul>
                         <li><span>PhD<br />EURECOM</span><small>Valbonne-FRANCE</small><small>Sep. 2001 - May. 2002</small></li>
                         <li><span>Master of Science<br />Bilkent University</span><small>Ankara-TURKEY</small><small>Sep. 1999 - Jun. 2001</small></li>
@@ -130,7 +154,7 @@ export default class Cv extends Page {
                      </ul>
                   </div>
                   <div className={styles['skills-prog']}>
-                     <h3><i className="fas fa-code"></i>Programming Skills</h3>
+                     <h3><i><StyledCodeIcon /></i>Programming Skills</h3>
                      <ul>
                         <SkillBar percent={50} name="HTML" />
                         <SkillBar percent={80} name="JavaScript" />

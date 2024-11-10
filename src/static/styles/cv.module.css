@@ -1,15 +1,15 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
 
 :root {
-   --color-darkest-blue: #1a237e;
-   --color-darker-blue: #283593;
+   --color-coral: coral;
+   --color-black: black;
    --color-dark-blue: #303f9f;
    --color-medium-blue: #3949ab;
    --color-light-blue: #3f51b5;
    --color-lighter-blue: #5c6bc0;
    --color-lightest-blue: #9fa8da;
    --color-white: #ffffff;
-   --color-black: #0e1442;
+   --color-orangered: orangered;
    --color-orange: #ffb300;
    --color-yellow: #fdd835;
    --color-dark-pink: #ad1457;
@@ -58,10 +58,10 @@ h3 {
 
 .resume {
    width: 960px;
-   background: var(--color-darkest-blue);
+   background: var(--color-coral);
    color: var(--color-white);
    margin: 20px auto;
-   box-shadow: 10px 10px var(--color-black);
+   box-shadow: 10px 10px var(--color-orangered);
    position: relative;
    display: flex;
 }
@@ -83,9 +83,9 @@ h3 {
 }
 
 .resume .base {
-   width: 30%;
+   width: 40%;
    padding: 30px 15px;
-   background: var(--color-darker-blue);
+   background: var(--color-black);
    color: var(--color-white);
 }
 
@@ -118,18 +118,23 @@ h3 {
    margin-top: 10px;
    margin-bottom: 0;
    font-size: 1.75em;
-   color: var(--color-darkest-blue);
+   color: var(--color-orangered);
 }
 
 .resume .base .profile .info .job {
    margin-top: 10px;
    margin-bottom: 0;
    font-size: 1.5em;
-   color: var(--color-darker-blue);
+   color: var(--color-black);
 }
 
 .resume .base .contact div {
    line-height: 24px;
+}
+
+.resume .base .contact div a {
+   display: flex;
+   gap: 0.5em;
 }
 
 .resume .base .contact div a:hover {
@@ -197,7 +202,7 @@ h3 {
    height: 60px;
    border-radius: 50%;
    line-height: 60px;
-   color: var(--color-darker-blue);
+   color: var(--color-black);
    margin: 0 10px 10px 10px;
    transition-duration: 0.3s;
 }
@@ -233,22 +238,17 @@ h3 {
 }
 
 .resume .func h3 i {
-   color: var(--color-darker-blue);
-   background: var(--color-orange);
-   width: 42px;
-   height: 42px;
-   font-size: 20px;
-   line-height: 42px;
-   border-radius: 50%;
-   text-align: center;
-   vertical-align: middle;
-   margin-right: 8px;
    transition-duration: 0.3s;
 }
 
 .resume .func .work,
 .resume .func .edu {
    float: left;
+   & h3 {
+      display: flex;
+      gap: 0.5em;
+      align-items: center;
+   }
 }
 
 .resume .func .work small,
@@ -349,21 +349,26 @@ h3 {
 
 .resume .func .work {
    width: 48%;
-   background: var(--color-darker-blue);
+   background: var(--color-black);
    padding: 15px;
    margin: 0 4% 15px 0;
 }
 
 .resume .func .edu {
    width: 48%;
-   background: var(--color-darker-blue);
+   background: var(--color-black);
    padding: 15px;
 }
 
 .resume .func .skills-prog {
    clear: both;
-   background: var(--color-darker-blue);
+   background: var(--color-black);
    padding: 15px;
+   & h3 {
+      display: flex;
+      gap: 0.5em;
+      align-items: center;
+   }
 }
 
 .resume .func .skills-prog ul {
@@ -410,7 +415,7 @@ h3 {
 
 .resume .func .skills-soft {
    clear: both;
-   background: var(--color-darker-blue);
+   background: var(--color-black);
    padding: 15px;
    margin: 15px 0 0;
 }
@@ -466,7 +471,7 @@ h3 {
 }
 
 .resume .func .interests {
-   background: var(--color-darker-blue);
+   background: var(--color-black);
    margin: 15px 0 0;
    padding: 15px;
 }
