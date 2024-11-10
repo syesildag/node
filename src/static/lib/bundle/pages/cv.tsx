@@ -1,96 +1,109 @@
 import styled from "@emotion/styled";
-import EmailIcon from '@mui/icons-material/Email';
-import PhoneIcon from '@mui/icons-material/Phone';
-import WorkIcon from '@mui/icons-material/Work';
-import SchoolIcon from '@mui/icons-material/School';
 import CodeIcon from '@mui/icons-material/Code';
+import EmailIcon from '@mui/icons-material/Email';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import PhoneIcon from '@mui/icons-material/Phone';
+import SchoolIcon from '@mui/icons-material/School';
+import WorkIcon from '@mui/icons-material/Work';
 import { SvgIconProps, SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
-import React, { useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import Page from "../../../../react/page";
 import styles from "../../../styles/cv.module.css";
 
-/*
-(function() {
-  $(".skills-soft li")
-    .find("svg")
-    .each(function(i) {
-      var c, cbar, circle, percent, r;
-      circle = $(this).children(".cbar");
-      r = circle.attr("r");
-      c = Math.PI * (r * 2);
-      percent = $(this)
-        .parent()
-        .data("percent");
-      cbar = (100 - percent) / 100 * c;
-      circle.css({
-        "stroke-dashoffset": c,
-        "stroke-dasharray": c
-      });
-      circle.delay(i * 150).animate(
-        {
-          strokeDashoffset: cbar
-        },
-        1000,
-        "linear",
-        function() {
-          return circle.css({
-            "transition-duration": ".3s"
-          });
-        }
-      );
-      $(this)
-        .siblings("small")
-        .prop("Counter", 0)
-        .delay(i * 150)
-        .animate(
-          {
-            Counter: percent
-          },
-          {
-            duration: 1000,
-            step: function(now) {
-              return $(this).text(Math.ceil(now) + "%");
-            }
-          }
-        );
-    });
-}.call(this));
-*/
-
-function createStyled<C extends OverridableComponent<SvgIconTypeMap>>(svgIcon: C) {
+function createWithStyle<C extends OverridableComponent<SvgIconTypeMap>>( svgIcon: C, props: CSSProperties = {} ) {
    return styled(svgIcon)<SvgIconProps>(({ theme }) => ({
       color: 'var(--color-yellow)',
       verticalAlign: 'sub',
+      ...props
    }));
 }
 
-const StyledPhoneIcon = createStyled(PhoneIcon);
-const StyledEmailIcon = createStyled(EmailIcon);
-const StyledWorkIcon = createStyled(WorkIcon);
-const StyledSchoolIcon = createStyled(SchoolIcon);
-const StyledCodeIcon = createStyled(CodeIcon);
+const StyledPhoneIcon = createWithStyle(PhoneIcon);
+const StyledEmailIcon = createWithStyle(EmailIcon);
+const StyledWorkIcon = createWithStyle(WorkIcon);
+const StyledSchoolIcon = createWithStyle(SchoolIcon);
+const StyledCodeIcon = createWithStyle(CodeIcon);
+const StyledLinkedInIcon = createWithStyle(LinkedInIcon, {
+   color: 'var(--color-black)',
+   transform: 'scale(1.5)',
+   verticalAlign: 'middle',
+});
 
-interface SkillBarProps {
+interface PercentProps {
    percent: number;
    name: string;
 }
 
-function SkillBar({ percent, name }: SkillBarProps) {
+function SkillBar({ percent, name }: PercentProps) {
    const [width, setWidth] = useState(0);
    useEffect(() => {
       requestAnimationFrame(() => setWidth(percent));
    }, [percent]);
-   return (
-      <li><span>{name}</span>
-         <div className={styles['skills-bar']}>
-            <div style={{
-               width: width + "%",
-               transition: 'width 1s',
-            }} className={styles.bar} />
-         </div>
-      </li>
-   );
+   return <>
+      <span>{name}</span>
+      <div className={styles['skills-bar']}>
+         <div style={{
+            width: width + "%",
+            transition: 'width 2s',
+         }} className={styles.bar} />
+      </div>
+   </>;
+}
+
+interface CircleProps extends PercentProps {
+   cx: number;
+   cy: number;
+   r: number;
+   duration?: number;
+}
+
+function SoftCircle({ percent, name, cx, cy, r, duration = 2 }: CircleProps) {
+   let c = Math.PI * (r * 2);
+   let cbar = (100 - percent) / 100 * c;
+
+   const [offset, setOffset] = useState(c);
+   const [now, setNow] = useState(String(0));
+
+   const iterations = 20;
+
+   let step = percent / iterations;
+   let ms = (duration * 1000) / iterations;
+
+   function repeat(n: string) {
+      setTimeout(() => {
+         let d = parseFloat(n);
+         d += step;
+         setNow(d.toFixed(2));
+         if (d < percent)
+            repeat(String(d));
+      }, ms);
+   }
+
+   useEffect(() => {
+      requestAnimationFrame(() => setOffset(cbar));
+      repeat(now);
+   }, [percent]);
+
+   return <>
+      <svg viewBox="0 0 100 100">
+         <circle cx={cx} cy={cy} r={r}></circle>
+         <circle className={styles.cbar}
+            cx={cx}
+            cy={cy}
+            r={r}
+            style={{
+               strokeDashoffset: offset,
+               strokeDasharray: c,
+               transitionDuration: duration + 's',
+            }}>
+         </circle>
+      </svg>
+      <div>
+         <span>{name}</span>
+         <small>{now}%</small>
+      </div>
+   </>;
 }
 
 export default class Cv extends Page {
@@ -100,6 +113,9 @@ export default class Cv extends Page {
             <div className={styles.resume}>
                <div className={styles.base}>
                   <div className={styles.profile}>
+                     <div className={styles.photo}>
+                        <img src="/static/images/me.jpg" alt="Serkan YESILDAG" />
+                     </div>
                      <div className={styles.info}>
                         <h1 className={styles.name}>Serkan YESILDAG</h1>
                         <h2 className={styles.job}>Software Engineer</h2>
@@ -125,13 +141,13 @@ export default class Cv extends Page {
                   </div>
                   <div className={styles.contact}>
                      <h3>Contact Me</h3>
-                     <div className={styles.call}><a href="tel:06.25.99.23.24"><StyledPhoneIcon/><span>06.25.99.23.24</span></a></div>
+                     <div className={styles.call}><a href="tel:06.25.99.23.24"><StyledPhoneIcon /><span>06.25.99.23.24</span></a></div>
                      <div className={styles.email}><a href="mailto:syesildag@hotmail.com"><StyledEmailIcon /><span>syesildag@hotmail.com</span></a></div>
                   </div>
                   <div className={styles.follow}>
                      <h3>Follow Me</h3>
                      <div className={styles.box}>
-                        <a href="https://www.linkedin.com/in/serkan-yesildag-816542314/" target="_blank"><i className="fab fa-linkedin"></i></a>
+                        <a href="https://www.linkedin.com/in/serkan-yesildag-816542314/" target="_blank"><i><StyledLinkedInIcon /></i></a>
                      </div>
                   </div>
                </div>
@@ -156,50 +172,22 @@ export default class Cv extends Page {
                   <div className={styles['skills-prog']}>
                      <h3><i><StyledCodeIcon /></i>Programming Skills</h3>
                      <ul>
-                        <SkillBar percent={50} name="HTML" />
-                        <SkillBar percent={80} name="JavaScript" />
-                        <SkillBar percent={90} name="Java" />
-                        <SkillBar percent={70} name="SQL" />
+                        <li><SkillBar percent={50} name="HTML" /></li>
+                        <li><SkillBar percent={80} name="TypeScript" /></li>
+                        <li><SkillBar percent={80} name="JavaScript" /></li>
+                        <li><SkillBar percent={90} name="NodeJS" /></li>
+                        <li><SkillBar percent={90} name="Java" /></li>
+                        <li><SkillBar percent={70} name="SQL" /></li>
                      </ul>
                   </div>
                   <div className={styles['skills-soft']}>
                      <h3><i className="fas fa-bezier-curve"></i>Software Skills</h3>
                      <ul>
-                        <li data-percent="90">
-                           <svg viewBox="0 0 100 100">
-                              <circle cx="50" cy="50" r="45"></circle>
-                              <circle className={styles.cbar} cx="50" cy="50" r="45"></circle>
-                           </svg><span>Illustrator</span><small></small>
-                        </li>
-                        <li data-percent="75">
-                           <svg viewBox="0 0 100 100">
-                              <circle cx="50" cy="50" r="45"></circle>
-                              <circle className={styles.cbar} cx="50" cy="50" r="45"></circle>
-                           </svg><span>Photoshop</span><small></small>
-                        </li>
-                        <li data-percent="85">
-                           <svg viewBox="0 0 100 100">
-                              <circle cx="50" cy="50" r="45"></circle>
-                              <circle className={styles.cbar} cx="50" cy="50" r="45"></circle>
-                           </svg><span>InDesign</span><small></small>
-                        </li>
-                        <li data-percent="65">
-                           <svg viewBox="0 0 100 100">
-                              <circle cx="50" cy="50" r="45"></circle>
-                              <circle className={styles.cbar} cx="50" cy="50" r="45"></circle>
-                           </svg><span>Dreamweaver</span><small></small>
-                        </li>
+                        <li><SoftCircle cx={50} cy={50} r={45} percent={80} name="React" /></li>
+                        <li><SoftCircle cx={50} cy={50} r={45} percent={75} name="MaterialUI" /></li>
+                        <li><SoftCircle cx={50} cy={50} r={45} percent={90} name="IntelliJ IDEA" /></li>
+                        <li><SoftCircle cx={50} cy={50} r={45} percent={70} name="Visual Studio Code" /></li>
                      </ul>
-                  </div>
-                  <div className={styles.interests}>
-                     <h3><i className="fas fa-star"></i>Interests</h3>
-                     <div className={styles['interests-items']}>
-                        <div className={styles.art}><i className="fas fa-palette"></i><span>Art</span></div>
-                        <div className={styles.art}><i className="fas fa-book"></i><span>Books</span></div>
-                        <div className={styles.movies}><i className="fas fa-film"></i><span>Movies</span></div>
-                        <div className={styles.music}><i className="fas fa-headphones"></i><span>Music</span></div>
-                        <div className={styles.games}><i className="fas fa-gamepad"></i><span>Games</span></div>
-                     </div>
                   </div>
                </div>
             </div>
