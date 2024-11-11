@@ -1,4 +1,4 @@
-import { Service, ServiceOptions } from 'node-linux';
+import { EventType, Service, ServiceOptions } from 'node-linux';
 import options from './options';
 
 // Create a new service object
@@ -10,28 +10,19 @@ svc.on('install', () => {
    svc.start();
 });
 
-svc.on('alreadyinstalled', () => {
-   console.log('alreadyinstalled');
-});
+const events: EventType[] = [
+   'alreadyinstalled',
+   'invalidinstallation',
+   'start',
+   'stop',
+   'error',
+   'doesnotexist',
+];
 
-svc.on('invalidinstallation', () => {
-   console.log('invalidinstallation');
-});
-
-svc.on('start', () => {
-   console.log('start');
-});
-
-svc.on('stop', () => {
-   console.log('stop');
-});
-
-svc.on('error', () => {
-   console.log('error');
-});
-
-svc.on('doesnotexist', () => {
-   console.log('doesnotexist');
+events.forEach((event: EventType) => {
+   svc.on(event, () => {
+      console.log(event);
+   });
 });
 
 svc.install();
