@@ -1,4 +1,4 @@
-declare module 'node-linux' {
+declare module 'node-windows' {
 
    export type EventType =
       'install' | //Fired when the script is installed as a service.

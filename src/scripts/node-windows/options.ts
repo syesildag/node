@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { ServiceOptions } from 'node-linux';
+import { ServiceOptions } from 'node-windows';
 import path from 'path';
 import { Immutable } from '../../utils/utilityTypes';
 

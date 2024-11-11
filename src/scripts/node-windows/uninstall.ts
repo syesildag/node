@@ -1,4 +1,4 @@
-import { Service, ServiceOptions } from 'node-linux';
+import { Service, ServiceOptions } from 'node-windows';
 import options from './options';
 
 // Create a new service object

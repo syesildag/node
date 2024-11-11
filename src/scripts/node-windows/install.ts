@@ -1,4 +1,4 @@
-import { EventType, Service, ServiceOptions } from 'node-linux';
+import { EventType, Service, ServiceOptions } from 'node-windows';
 import options from './options';
 
 // Create a new service object
