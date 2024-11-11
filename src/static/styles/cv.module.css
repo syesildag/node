@@ -60,8 +60,15 @@ h3 {
    text-align: center;
 
    & img {
+      border-radius: 999px;
+      opacity: 0.9;
+      filter: blur(0.5px);
       max-width: 80%;
       max-height: 80%;
+      transition: opacity 0.5s ease;
+      &:hover {
+         opacity: 1;
+      }
    }
 }
 
@@ -253,6 +260,7 @@ h3 {
 .resume .func .work,
 .resume .func .edu {
    float: left;
+
    & h3 {
       display: flex;
       gap: 0.5em;
@@ -373,6 +381,7 @@ h3 {
    clear: both;
    background: var(--color-black);
    padding: 15px;
+
    & h3 {
       display: flex;
       gap: 0.5em;
