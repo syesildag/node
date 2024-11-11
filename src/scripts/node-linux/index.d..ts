@@ -23,6 +23,9 @@ declare module 'node-linux' {
       user?: string | undefined;
       group?: string | undefined;
       cwd: string;
+      wait?: number;
+      grow?: number;
+      abortOnError?: boolean;
    }
 
    export class Service {

@@ -5,10 +5,13 @@ import { Immutable } from '../../utils/utilityTypes';
 
 export default {
    name: 'node',
-   description: 'The nodejs.org example web server.',
+   description: 'The nodejs.org express web server.',
    script: path.join(__dirname, '../../index.js'),
    env: Object.keys(process.env).map(key => ({ name: key, value: process.env[key] })),
-   user: process.env.USER,
-   group: process.env.GROUP,
+   user: process.env.NODE_USER,
+   group: process.env.NODE_GROUP,
    cwd: process.cwd(),
+   wait: 2,
+   grow: .5,
+   abortOnError: false
 } as Immutable<ServiceOptions>;
