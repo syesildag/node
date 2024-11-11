@@ -27,7 +27,7 @@ const StyledCodeIcon = createWithStyle(CodeIcon);
 const StyledLinkedInIcon = createWithStyle(LinkedInIcon, {
    color: 'var(--color-black)',
    transform: 'scale(1.5)',
-   verticalAlign: 'middle',
+   verticalAlign: 'inherit',
 });
 
 interface PercentProps {
