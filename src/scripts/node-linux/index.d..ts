@@ -26,9 +26,25 @@ declare module 'node-linux' {
       wait?: number;
       grow?: number;
       abortOnError?: boolean;
+      nodeOptions?: string[];
+      execPath?: string;
+      dependsOn?: string[];
+      allowServiceLogon?: boolean;
+   }
+
+   export interface LogOnAs {
+      domain: string;
+      account: string;
+      password: string;
+   }
+
+   export interface Sudo {
+      password: string;
    }
 
    export class Service {
+      public logOnAs: LogOnAs;
+      public sudo: Sudo;
       constructor(options: ServiceOptions);
       on(event: EventType, callback: () => void): void;
       start(): void;
