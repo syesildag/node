@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Chess with Stockfish</title>
+   <link rel="stylesheet" href="/static/styles/chess.module.css">
+</head>
+
+<body>
+   <h1>Chess Game with Stockfish AI</h1>
+   <div id="board" class="board"></div>
+   <p id="message" class="message"></p>
+   <button id="reset" class="reset-button">Reset Game</button>
+
+   <!-- Stockfish Engine -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/9.0.0/stockfish.min.js"></script>
+   <script src="/static/lib/bundle/chess.js" type="module"></script>
+</body>
+
+</html>
