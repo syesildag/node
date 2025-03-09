@@ -1,5 +1,6 @@
 import * as esbuild from 'esbuild';
 import { getAbsoluteFileNamesFromDirSync } from '../utils/fileNames';
+import { isProduction } from '../utils/environment';
 
 export const entryPoints = [
    'static/lib/bundle',
@@ -15,7 +16,7 @@ export default function process(fun: (dir: string, fileNames: string[], options:
          entryPoints: fileNames,
          outdir: 'dist/' + dir,
          bundle: true,
-         minify: true,
+         minify: isProduction(),
          sourcemap: true,
          splitting: true,
          format: 'esm',

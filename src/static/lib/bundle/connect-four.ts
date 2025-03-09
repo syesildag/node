@@ -50,7 +50,7 @@ function animatePiece(column: number, row: number, color: string) {
    const cell = boardElement.children[row * cols + column] as HTMLElement;
    const piece = document.createElement('div');
    piece.classList.add('piece', color);
-   piece.style.top = '-100px';
+   piece.style.top = '-85px';
    cell.appendChild(piece);
 
    setTimeout(() => {
