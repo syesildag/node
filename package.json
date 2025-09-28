@@ -6,10 +6,6 @@
    "scripts": {
       "clean": "rm -fr dist;rm -fr deploy",
       "generate-sea": "./sea-config.sh",
-      "install-linux": "node dist/scripts/node-linux/install.js",
-      "uninstall-linux": "node dist/scripts/node-linux/uninstall.js",
-      "install-windows": "node dist/scripts/node-windows/install.js",
-      "uninstall-windows": "node dist/scripts/node-windows/uninstall.js",
       "watch": "node dist/esbuild/watch.js",
       "start": "node dist/index.js",
       "compile": "tsc",
@@ -62,9 +58,7 @@
       "graphql": "^16.9.0",
       "graphql-http": "^1.22.1",
       "jsdom": "^25.0.0",
-      "node-linux": "^0.1.7",
       "node-schedule": "^2.1.1",
-      "node-windows": "^1.0.0-beta.8",
       "react": "^18.3.1",
       "react-dom": "^18.3.1",
       "serve-favicon": "^2.5.0"
