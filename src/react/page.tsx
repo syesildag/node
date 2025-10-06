@@ -13,7 +13,7 @@ export interface HandleSubmitOptions {
    onError?: (error: unknown) => void;
 }
 
-export default abstract class Page extends React.Component<Props> {
+export default abstract class Page<S=any> extends React.Component<Props, S> {
 
    public static mount<P extends {} = any>(props: P, placeholder: string, component: FunctionComponent<P> | ComponentClass<P>) {
       let container = document.getElementById(placeholder);
