@@ -2,6 +2,46 @@ import React from "react";
 import Page from "../../../../react/page";
 import styles from "../../../styles/voice.module.css";
 
+// Type declarations for Web Speech API
+declare global {
+    interface Window {
+        SpeechRecognition: typeof SpeechRecognition;
+        webkitSpeechRecognition: typeof SpeechRecognition;
+    }
+}
+
+interface SpeechRecognitionAlternative {
+    transcript: string;
+    confidence: number;
+}
+
+interface SpeechRecognitionResult {
+    readonly [index: number]: SpeechRecognitionAlternative;
+    readonly length: number;
+}
+
+interface SpeechRecognitionResultList {
+    readonly [index: number]: SpeechRecognitionResult;
+    readonly length: number;
+}
+
+interface SpeechRecognitionEvent extends Event {
+    readonly results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognition extends EventTarget {
+    lang: string;
+    start(): void;
+    stop(): void;
+    addEventListener(type: 'result', listener: (event: SpeechRecognitionEvent) => void): void;
+    addEventListener(type: string, listener: EventListener): void;
+}
+
+declare var SpeechRecognition: {
+    prototype: SpeechRecognition;
+    new(): SpeechRecognition;
+};
+
 export default class Test extends Page {
 
     componentDidMount() {
@@ -25,7 +65,7 @@ export default class Test extends Page {
             output.textContent = '';
         });
 
-        recognition.addEventListener('result', e => {
+        recognition.addEventListener('result', (e: SpeechRecognitionEvent) => {
             const text = Array.from(e.results)
                 .map(result => result[0])
                 .map(result => result.transcript)
