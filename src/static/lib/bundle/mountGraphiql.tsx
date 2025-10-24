@@ -10,9 +10,9 @@ export default function mountGraphiql(placeholder: string, url: string) {
 
 function graphiql(options: CreateFetcherOptions) {
   return <GraphiQL
-    fetcher={createGraphiQLFetcher(options)}
+    fetcher={createGraphiQLFetcher({...options})}
     defaultQuery={defaultQuery}
-    variables={defaultVariables}
+    initialVariables={initialVariables}
   />;
 }
 
@@ -23,7 +23,7 @@ const defaultQuery = `query GetDie($numSides: Int, $numRolls: Int!) {
   }
 }`;
 
-const defaultVariables = `{
+const initialVariables = `{
   "numSides": 6,
   "numRolls": 5
 }`;

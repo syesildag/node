@@ -24,6 +24,9 @@ export default function process(fun: (dir: string, fileNames: string[], options:
          target: 'es2022',
          tsconfig: 'tsconfig.json',
          chunkNames: 'chunks/[name]-[hash]',
+         loader: {
+            '.ttf': 'file',
+         },
       };
 
       fun(dir, fileNames, options);
