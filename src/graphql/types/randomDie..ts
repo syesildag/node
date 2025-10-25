@@ -3,13 +3,10 @@ import { Context } from "../../context";
 import {
    IRandomDieResolver,
    QueryGetDieArgs,
+   RandomDieRollArgs,
    ResolverTypeWrapper,
    Scalars
 } from "../../generated/schema-types";
-
-export interface RollArgs {
-   numRolls: number;
-}
 
 export default class RandomDie implements IRandomDieResolver {
 
@@ -27,7 +24,7 @@ export default class RandomDie implements IRandomDieResolver {
       return 1 + Math.floor(Math.random() * this._numSides);
    }
 
-   roll({ numRolls }: RollArgs) {
+   roll({ numRolls }: RandomDieRollArgs) {
       var output = [];
       for (var i = 0; i < numRolls; i++)
          output.push(this.rollOnce());
