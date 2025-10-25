@@ -15,7 +15,7 @@ async function main() {
    else
       throw new Error(`No File: ${imagePath}`);
 
-   const tfimage = tf.node.decodeJpeg(imageBuffer);
+   const tfimage = tf.node.decodeJpeg(new Uint8Array(imageBuffer));
    const mobilenetModel = await mobilenet.load();
    const predictions = await mobilenetModel.classify(tfimage);
    console.log(predictions);
