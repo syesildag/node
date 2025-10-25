@@ -1,24 +1,35 @@
-import { GetDieArgs } from "../query/getDie";
+import { GraphQLResolveInfo } from "graphql";
+import { Context } from "../../context";
+import {
+   IRandomDieResolver,
+   QueryGetDieArgs,
+   ResolverTypeWrapper,
+   Scalars
+} from "../../generated/schema-types";
 
 export interface RollArgs {
    numRolls: number;
 }
 
-export default class RandomDie {
+export default class RandomDie implements IRandomDieResolver {
 
-   private numSides: number;
+   private _numSides: number;
 
-   constructor(getDieArgs: GetDieArgs) {
-      this.numSides = getDieArgs.numSides ?? 6;
+   constructor({ numSides }: QueryGetDieArgs) {
+      this._numSides = numSides ?? 6;
+   }
+
+   numSides(args: {}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Scalars["Int"]["output"]> {
+      return this._numSides;
    }
 
    rollOnce() {
-      return 1 + Math.floor(Math.random() * this.numSides);
+      return 1 + Math.floor(Math.random() * this._numSides);
    }
 
-   roll(rollArgs: RollArgs) {
+   roll({ numRolls }: RollArgs) {
       var output = [];
-      for (var i = 0; i < rollArgs.numRolls; i++)
+      for (var i = 0; i < numRolls; i++)
          output.push(this.rollOnce());
       return output;
    }

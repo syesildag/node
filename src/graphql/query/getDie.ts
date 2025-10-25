@@ -1,9 +1,6 @@
+import { QueryGetDieArgs } from "../../generated/schema-types";
 import RandomDie from "../types/randomDie.";
 
-export interface GetDieArgs {
-   numSides: number;
-}
-
-export default function getDie(getDieArgs: GetDieArgs) {
+export default function getDie(getDieArgs: QueryGetDieArgs) {
    return new RandomDie(getDieArgs);
 }
