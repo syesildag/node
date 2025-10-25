@@ -5,7 +5,7 @@
 
    Run with: npm run generate-schema-types
 */
-import { readFile, writeFile } from 'fs/promises'
+import { readFile, writeFile, mkdir } from 'fs/promises'
 import path from 'path'
 import {
   parse,
@@ -36,35 +36,6 @@ const scalarMap: Record<string, string> = {
   Boolean: 'boolean',
 }
 
-function unwrapType(type: GraphQLType): { ts: string; nullable: boolean } {
-  // Recursively unwrap lists and non-nulls to produce a TS type string and nullability
-  let nullable = true
-  let t: GraphQLType = type
-  if (isNonNullType(t)) {
-    nullable = false
-    // @ts-ignore
-    t = t.ofType
-  }
-
-  let listDepth = 0
-  while (isListType(t)) {
-    // @ts-ignore
-    t = t.ofType
-    listDepth++
-    if (isNonNullType(t)) {
-      // inner non-null
-      // @ts-ignore
-      t = t.ofType
-    }
-  }
-
-  const named = (t as any).name as string | undefined
-  const baseTs = named && scalarMap[named] ? scalarMap[named] : named || 'any'
-  let ts = baseTs
-  for (let i = 0; i < listDepth; i++) ts = `${ts}[]`
-
-  return { ts, nullable }
-}
 
 function unwrapTypeForScalars(type: GraphQLType, mode: 'input' | 'output'): { ts: string; nullable: boolean } {
   let nullable = true
@@ -105,9 +76,6 @@ function unwrapTypeForScalars(type: GraphQLType, mode: 'input' | 'output'): { ts
   return { ts, nullable }
 }
 
-function fieldHasArgs(field: any): boolean {
-  return field.args && field.args.length > 0
-}
 
 function makeArgsInterfaceName(parentName: string, fieldName: string) {
   return `${parentName}${capitalize(fieldName)}Args`
@@ -188,7 +156,6 @@ async function main() {
   lines.push('')
 
   // Collect generated arg interfaces to avoid duplicates
-  const argInterfaces: string[] = []
 
   // Enums first
   for (const typeName of Object.keys(typeMap).sort()) {
@@ -222,7 +189,90 @@ async function main() {
     }
   }
 
+  // Object types -> data interfaces and collect resolver-class interfaces + arg interfaces
+  const classInterfaces: Record<string, string[]> = {}
+  const argInterfacesMap: Record<string, string[]> = {}
+
+  for (const typeName of Object.keys(typeMap).sort()) {
+    const type = typeMap[typeName]
+    if (!typeName.startsWith('__') && isObjectType(type)) {
+      const ot = type as GraphQLObjectType
+      // Data output type: include all fields and __typename
+      lines.push(`export type ${typeName} = {`)
+      lines.push(`  __typename?: '${typeName}';`)
+      const fields = ot.getFields()
+      for (const fName of Object.keys(fields)) {
+        const field = fields[fName]
+        const { ts, nullable } = unwrapTypeForScalars(field.type as GraphQLType, 'output')
+        if (nullable) {
+          lines.push(`  ${fName}: Maybe<${ts}>;`)
+        } else {
+          lines.push(`  ${fName}: ${ts};`)
+        }
+      }
+      lines.push('}')
+      lines.push('')
+
+      // collect resolver-class method signatures
+      const methodLines: string[] = []
+      for (const fName of Object.keys(fields)) {
+        const field = fields[fName]
+        let argsType = '{}'
+        if (field.args && field.args.length > 0) {
+          const argsIfaceName = makeArgsInterfaceName(typeName, fName)
+          argsType = argsIfaceName
+          if (!argInterfacesMap[argsIfaceName]) {
+            const argLines: string[] = []
+            argLines.push(`export type ${argsIfaceName} = {`)
+            for (const a of field.args) {
+              const { ts, nullable } = unwrapTypeForScalars(a.type as GraphQLType, 'input')
+              if (nullable) {
+                argLines.push(`  ${a.name}?: InputMaybe<${ts}>;`)
+              } else {
+                argLines.push(`  ${a.name}: ${ts};`)
+              }
+            }
+            argLines.push('}')
+            argLines.push('')
+            argInterfacesMap[argsIfaceName] = argLines
+          }
+        }
+
+        const { ts: returnTs, nullable: returnNullable } = unwrapTypeForScalars(field.type as GraphQLType, 'output')
+        const returnTypeWrapped = returnNullable ? `Maybe<${returnTs}>` : returnTs
+        // If return type is an object type, return the resolver interface instead of data type
+        const namedReturn = getNamedTypeName(field.type as GraphQLType)
+        const returnTypeObj = namedReturn ? schema.getType(namedReturn) : null
+        const isReturnObject = returnTypeObj && isObjectType(returnTypeObj)
+        const finalReturnType = isReturnObject ? (returnNullable ? `Maybe<I${namedReturn}Resolver>` : `I${namedReturn}Resolver`) : returnTypeWrapped
+        methodLines.push(
+          `  ${fName}(args: ${argsType}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<${finalReturnType}>;`
+        )
+      }
+      // Use I-prefixed resolver interface names (e.g. IQueryResolver)
+      classInterfaces[`I${typeName}Resolver`] = methodLines
+    }
+  }
+
+  // Emit collected arg interfaces (top-level, not nested)
+  for (const k of Object.keys(argInterfacesMap)) {
+    lines.push(...argInterfacesMap[k])
+  }
+
+  // Emit resolver-class interfaces
+  for (const className of Object.keys(classInterfaces)) {
+    lines.push(`export interface ${className} {`)
+    lines.push(...classInterfaces[className])
+    lines.push('}')
+    lines.push('')
+  }
+
+  // Resolvers mapping type
+  lines.push('export type Resolvers = IQueryResolver & IMutationResolver;')
+  lines.push('')
+
   // Write output
+  await mkdir(OUT_DIR, { recursive: true })
   const content = lines.join('\n') + '\n'
   await writeFile(OUT_FILE, content, 'utf8')
   console.log(`Wrote ${OUT_FILE}`)
