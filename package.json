@@ -13,7 +13,8 @@
       "buildStart": "npm run build && npm start",
       "buildDev": "NODE_ENV=development npm run buildStart",
       "test": "jest",
-      "codegen": "graphql-codegen-esm --config codegen.ts"
+      "codegen": "graphql-codegen-esm --config codegen.ts",
+      "generate-schema-types": "ts-node src/scripts/generate-types.ts"
    },
    "author": "Serkan YESILDAG",
    "license": "MIT",

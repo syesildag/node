@@ -4,16 +4,18 @@ import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import fs from 'fs';
 import { buildSchema } from "graphql";
+import { RequestParams, Request as GraphQLRequest } from "graphql-http";
 import { createHandler } from "graphql-http/lib/use/express";
+import { Socket } from "net";
 import schedule from "node-schedule";
 import path from 'path';
 import favicon from "serve-favicon";
+import { Context } from "./context";
 import rootValue from "./graphql/root";
+import { Constructor } from "./utils/annotations";
 import stringify from "./utils/circularJSON";
 import { getAbsoluteFileNamesFromDir, getFileNamesFromDir } from "./utils/fileNames";
 import JobFactory from "./utils/jobFactory";
-import { Constructor } from "./utils/annotations";
-import { Socket } from "net";
 
 const app = express();
 
@@ -71,7 +73,17 @@ const schema = buildSchema(
    }));
 
 // Create and use the GraphQL handler.
-app.all("/graphql", createHandler({ schema, rootValue }));
+app.all("/graphql", createHandler({
+   schema,
+   rootValue,
+   context(req: GraphQLRequest<any, any>, params: RequestParams): Context {
+      // Create and return the context object for each request
+      return {
+         req,
+         params
+      };
+   }
+}));
 
 app.post("/:page", (req: Request, res: Response) => {
    res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(req.body));
