@@ -43,7 +43,7 @@ export default abstract class Page<S=any> extends React.Component<Props, S> {
 
       try {
          const response = await fetch(form.action, {
-            method: "POST",
+            method: form.method,
             headers: {
                "Content-Type": "application/json"
             },
