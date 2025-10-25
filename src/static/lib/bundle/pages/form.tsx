@@ -3,7 +3,7 @@ import Grid2 from '@mui/material/Grid2';
 import React from "react";
 import Page from "../../../../react/page";
 
-export default class Test extends Page {
+export default class Form extends Page {
    render() {
       return super.render(
          <form method="post" onSubmit={this.handleSubmit({ redirect: '/home' })}>

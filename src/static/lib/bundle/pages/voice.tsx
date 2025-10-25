@@ -42,7 +42,7 @@ declare var SpeechRecognition: {
     new(): SpeechRecognition;
 };
 
-export default class Test extends Page {
+export default class Voice extends Page {
 
     componentDidMount() {
         const startStopButton = document.getElementById('startButton') as HTMLButtonElement;
