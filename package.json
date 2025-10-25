@@ -13,16 +13,11 @@
       "buildStart": "npm run build && npm start",
       "buildDev": "NODE_ENV=development npm run buildStart",
       "test": "jest",
-      "codegen": "graphql-codegen-esm --config codegen.ts",
-      "generate-schema-types": "ts-node src/scripts/generate-types.ts"
+      "codegen": "ts-node src/scripts/generate-types.ts"
    },
    "author": "Serkan YESILDAG",
    "license": "MIT",
    "devDependencies": {
-      "@graphql-codegen/cli": "5.0.2",
-      "@graphql-codegen/introspection": "4.0.3",
-      "@graphql-codegen/typescript": "4.0.9",
-      "@graphql-codegen/typescript-resolvers": "^5.1.0",
       "@jest/globals": "^28.1.3",
       "@swc/core": "^1.7.22",
       "@types/compression": "^1.7.5",

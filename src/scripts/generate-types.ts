@@ -23,9 +23,9 @@ import {
 } from 'graphql'
 import path from 'path'
 
-const OUT_DIR = path.join(process.cwd(), 'src', 'generated')
-const OUT_FILE = path.join(OUT_DIR, 'schema-types.ts')
-const SCHEMA_FILE = path.join(process.cwd(), 'schema.graphql')
+const OUT_DIR = path.join(process.cwd(), 'src', 'generated');
+const OUT_FILE = path.join(OUT_DIR, 'schema-types.ts');
+const SCHEMA_FILE = path.join(process.cwd(), 'schema.graphql');
 
 const scalarMap: Record<string, string> = {
   String: 'string',
@@ -33,46 +33,46 @@ const scalarMap: Record<string, string> = {
   Int: 'number',
   Float: 'number',
   Boolean: 'boolean',
-}
+};
 
 
 function unwrapTypeForScalars(type: GraphQLType, mode: 'input' | 'output'): { ts: string; nullable: boolean } {
-  let nullable = true
-  let t: GraphQLType = type
+  let nullable = true;
+  let t: GraphQLType = type;
   if (isNonNullType(t)) {
-    nullable = false
+    nullable = false;
     // @ts-ignore
-    t = t.ofType
+    t = t.ofType;
   }
 
-  let listDepth = 0
+  let listDepth = 0;
   while (isListType(t)) {
     // @ts-ignore
-    t = t.ofType
-    listDepth++
+    t = t.ofType;
+    listDepth++;
     if (isNonNullType(t)) {
       // inner non-null
       // @ts-ignore
-      t = t.ofType
+      t = t.ofType;
     }
   }
 
-  const named = (t as any).name as string | undefined
-  let baseTs = 'any'
+  const named = (t as any).name as string | undefined;
+  let baseTs = 'any';
   if (named) {
     // for built-in scalars use Scalars['Name']['input'|'output']
     if (scalarMap[named]) {
-      baseTs = `Scalars['${named}']['${mode}']`
+      baseTs = `Scalars['${named}']['${mode}']`;
     } else {
       // otherwise use the named type directly
-      baseTs = named
+      baseTs = named;
     }
   }
 
-  let ts = baseTs
-  for (let i = 0; i < listDepth; i++) ts = `Array<${ts}>`
+  let ts = baseTs;
+  for (let i = 0; i < listDepth; i++) ts = `Array<${ts}>`;
 
-  return { ts, nullable }
+  return { ts, nullable };
 }
 
 
@@ -85,21 +85,21 @@ function capitalize(s: string) {
 }
 
 function getNamedTypeName(type: GraphQLType): string | null {
-  let t: GraphQLType = type
+  let t: GraphQLType = type;
   if (isNonNullType(t)) {
     // @ts-ignore
-    t = t.ofType
+    t = t.ofType;
   }
   while (isListType(t)) {
     // @ts-ignore
-    t = t.ofType
+    t = t.ofType;
     if (isNonNullType(t)) {
       // @ts-ignore
-      t = t.ofType
+      t = t.ofType;
     }
   }
   // @ts-ignore
-  return (t as any).name || null
+  return (t as any).name || null;
 }
 
 async function main() {
@@ -122,21 +122,19 @@ async function main() {
   // small helper matching existing generated style
   lines.push('export type ResolverTypeWrapper<T> = Promise<T> | T;')
   lines.push('')
-  lines.push('')
 
   // Emit Scalars mapping (built-ins + any custom scalars found in schema)
-  const scalarNames: string[] = []
+  const scalarNames: string[] = [];
   for (const tn of Object.keys(typeMap)) {
-    const t = typeMap[tn]
+    const t = typeMap[tn];
     if (!tn.startsWith('__') && isScalarType(t)) {
-      scalarNames.push(tn)
+      scalarNames.push(tn);
     }
   }
 
   // canonical built-in ordering — always include built-in scalar mappings
-  const builtinOrder = ['ID', 'String', 'Boolean', 'Int', 'Float']
-  const customScalars = scalarNames.filter(n => !builtinOrder.includes(n))
-  lines.push('/** All built-in and custom scalars, mapped to their actual values */')
+  const builtinOrder = ['ID', 'String', 'Boolean', 'Int', 'Float'];
+  const customScalars = scalarNames.filter(n => !builtinOrder.includes(n));
   lines.push('export type Scalars = {')
   for (const sn of builtinOrder) {
     if (scalarMap[sn]) {
@@ -158,98 +156,98 @@ async function main() {
 
   // Enums first
   for (const typeName of Object.keys(typeMap).sort()) {
-    const type = typeMap[typeName]
+    const type = typeMap[typeName];
     if (!typeName.startsWith('__') && isEnumType(type)) {
-      const et = type as GraphQLEnumType
-      const values = et.getValues().map(v => `'${v.name}'`).join(' | ')
-      lines.push(`export type ${typeName} = ${values}`)
-      lines.push('')
+      const et = type as GraphQLEnumType;
+      const values = et.getValues().map(v => `'${v.name}'`).join(' | ');
+      lines.push(`export type ${typeName} = ${values};`);
+      lines.push('');
     }
   }
 
   // Input types
   for (const typeName of Object.keys(typeMap).sort()) {
-    const type = typeMap[typeName]
+    const type = typeMap[typeName];
     if (!typeName.startsWith('__') && isInputObjectType(type)) {
-      const it = type as GraphQLInputObjectType
-        lines.push(`export type ${typeName} = {`)
-      const fields = it.getFields()
+      const it = type as GraphQLInputObjectType;
+      lines.push(`export type ${typeName} = {`);
+      const fields = it.getFields();
       for (const fName of Object.keys(fields)) {
-        const field = fields[fName]
-          const { ts, nullable } = unwrapTypeForScalars(field.type as GraphQLType, 'input')
-          if (nullable) {
-            lines.push(`  ${fName}?: InputMaybe<${ts}>`)
-          } else {
-            lines.push(`  ${fName}: ${ts}`)
-          }
+        const field = fields[fName];
+        const { ts, nullable } = unwrapTypeForScalars(field.type as GraphQLType, 'input');
+        if (nullable) {
+          lines.push(`  ${fName}?: InputMaybe<${ts}>;`);
+        } else {
+          lines.push(`  ${fName}: ${ts};`);
+        }
       }
-        lines.push('}')
-      lines.push('')
+      lines.push('};');
+      lines.push('');
     }
   }
 
   // Object types -> data interfaces and collect resolver-class interfaces + arg interfaces
-  const classInterfaces: Record<string, string[]> = {}
-  const argInterfacesMap: Record<string, string[]> = {}
+  const classInterfaces: Record<string, string[]> = {};
+  const argInterfacesMap: Record<string, string[]> = {};
 
   for (const typeName of Object.keys(typeMap).sort()) {
-    const type = typeMap[typeName]
+    const type = typeMap[typeName];
     if (!typeName.startsWith('__') && isObjectType(type)) {
-      const ot = type as GraphQLObjectType
+      const ot = type as GraphQLObjectType;
       // Data output type: include all fields and __typename
-      lines.push(`export type ${typeName} = {`)
-      lines.push(`  __typename?: '${typeName}';`)
-      const fields = ot.getFields()
+      lines.push(`export type ${typeName} = {`);
+      lines.push(`  __typename?: '${typeName}';`);
+      const fields = ot.getFields();
       for (const fName of Object.keys(fields)) {
-        const field = fields[fName]
-        const { ts, nullable } = unwrapTypeForScalars(field.type as GraphQLType, 'output')
+        const field = fields[fName];
+        const { ts, nullable } = unwrapTypeForScalars(field.type as GraphQLType, 'output');
         if (nullable) {
-          lines.push(`  ${fName}: Maybe<${ts}>;`)
+          lines.push(`  ${fName}: Maybe<${ts}>;`);
         } else {
-          lines.push(`  ${fName}: ${ts};`)
+          lines.push(`  ${fName}: ${ts};`);
         }
       }
-      lines.push('}')
-      lines.push('')
+      lines.push('};');
+      lines.push('');
 
       // collect resolver-class method signatures
-      const methodLines: string[] = []
+      const methodLines: string[] = [];
       for (const fName of Object.keys(fields)) {
-        const field = fields[fName]
-        let argsType = '{}'
+        const field = fields[fName];
+        let argsType = '{}';
         if (field.args && field.args.length > 0) {
-          const argsIfaceName = makeArgsInterfaceName(typeName, fName)
-          argsType = argsIfaceName
+          const argsIfaceName = makeArgsInterfaceName(typeName, fName);
+          argsType = argsIfaceName;
           if (!argInterfacesMap[argsIfaceName]) {
-            const argLines: string[] = []
-            argLines.push(`export type ${argsIfaceName} = {`)
+            const argLines: string[] = [];
+            argLines.push(`export type ${argsIfaceName} = {`);
             for (const a of field.args) {
-              const { ts, nullable } = unwrapTypeForScalars(a.type as GraphQLType, 'input')
+              const { ts, nullable } = unwrapTypeForScalars(a.type as GraphQLType, 'input');
               if (nullable) {
-                argLines.push(`  ${a.name}?: InputMaybe<${ts}>;`)
+                argLines.push(`  ${a.name}?: InputMaybe<${ts}>;`);
               } else {
-                argLines.push(`  ${a.name}: ${ts};`)
+                argLines.push(`  ${a.name}: ${ts};`);
               }
             }
-            argLines.push('}')
-            argLines.push('')
-            argInterfacesMap[argsIfaceName] = argLines
+            argLines.push('};');
+            argLines.push('');
+            argInterfacesMap[argsIfaceName] = argLines;
           }
         }
 
-        const { ts: returnTs, nullable: returnNullable } = unwrapTypeForScalars(field.type as GraphQLType, 'output')
-        const returnTypeWrapped = returnNullable ? `Maybe<${returnTs}>` : returnTs
+        const { ts: returnTs, nullable: returnNullable } = unwrapTypeForScalars(field.type as GraphQLType, 'output');
+        const returnTypeWrapped = returnNullable ? `Maybe<${returnTs}>` : returnTs;
         // If return type is an object type, return the resolver interface instead of data type
-        const namedReturn = getNamedTypeName(field.type as GraphQLType)
-        const returnTypeObj = namedReturn ? schema.getType(namedReturn) : null
-        const isReturnObject = returnTypeObj && isObjectType(returnTypeObj)
-        const finalReturnType = isReturnObject ? (returnNullable ? `Maybe<I${namedReturn}Resolver>` : `I${namedReturn}Resolver`) : returnTypeWrapped
+        const namedReturn = getNamedTypeName(field.type as GraphQLType);
+        const returnTypeObj = namedReturn ? schema.getType(namedReturn) : null;
+        const isReturnObject = returnTypeObj && isObjectType(returnTypeObj);
+        const finalReturnType = isReturnObject ? (returnNullable ? `Maybe<I${namedReturn}Resolver>` : `I${namedReturn}Resolver`) : returnTypeWrapped;
         methodLines.push(
           `  ${fName}(args: ${argsType}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<${finalReturnType}>;`
-        )
+        );
       }
       // Use I-prefixed resolver interface names (e.g. IQueryResolver)
-      classInterfaces[`I${typeName}Resolver`] = methodLines
+      classInterfaces[`I${typeName}Resolver`] = methodLines;
     }
   }
 
@@ -262,7 +260,7 @@ async function main() {
   for (const className of Object.keys(classInterfaces)) {
     lines.push(`export interface ${className} {`)
     lines.push(...classInterfaces[className])
-    lines.push('}')
+    lines.push('};')
     lines.push('')
   }
 
@@ -271,10 +269,10 @@ async function main() {
   lines.push('')
 
   // Write output
-  await mkdir(OUT_DIR, { recursive: true })
-  const content = lines.join('\n') + '\n'
-  await writeFile(OUT_FILE, content, 'utf8')
-  console.log(`Wrote ${OUT_FILE}`)
+  await mkdir(OUT_DIR, { recursive: true });
+  const content = lines.join('\n') + '\n';
+  await writeFile(OUT_FILE, content, 'utf8');
+  console.log(`Wrote ${OUT_FILE}`);
 }
 
 main().catch(err => {
