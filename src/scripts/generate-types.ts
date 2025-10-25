@@ -5,24 +5,23 @@
 
    Run with: npm run generate-schema-types
 */
-import { readFile, writeFile, mkdir } from 'fs/promises'
-import path from 'path'
+import { mkdir, readFile, writeFile } from 'fs/promises'
 import {
-  parse,
   buildASTSchema,
-  isObjectType,
-  isInputObjectType,
-  isEnumType,
-  isScalarType,
-  isNonNullType,
-  isListType,
+  GraphQLEnumType,
+  GraphQLInputObjectType,
+  GraphQLObjectType,
   GraphQLSchema,
   GraphQLType,
-  GraphQLNamedType,
-  GraphQLObjectType,
-  GraphQLInputObjectType,
-  GraphQLEnumType,
+  isEnumType,
+  isInputObjectType,
+  isListType,
+  isNonNullType,
+  isObjectType,
+  isScalarType,
+  parse
 } from 'graphql'
+import path from 'path'
 
 const OUT_DIR = path.join(process.cwd(), 'src', 'generated')
 const OUT_FILE = path.join(OUT_DIR, 'schema-types.ts')
