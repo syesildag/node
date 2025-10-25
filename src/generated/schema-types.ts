@@ -17,6 +17,19 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  Date: { input: any; output: any; }
+}
+
+export type Episode = 'NEWHOPE' | 'EMPIRE' | 'JEDI'
+
+export type ReviewInput = {
+  stars: Scalars['Int']['input']
+  commentary?: InputMaybe<Scalars['String']['input']>
+}
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createReview: Maybe<Review>;
 }
 
 export type Query = {
@@ -31,6 +44,17 @@ export type RandomDie = {
   roll: Array<Scalars['Int']['output']>;
 }
 
+export type Review = {
+  __typename?: 'Review';
+  stars: Scalars['Int']['output'];
+  commentary: Maybe<Scalars['String']['output']>;
+}
+
+export type MutationCreateReviewArgs = {
+  episode?: InputMaybe<Episode>;
+  review: ReviewInput;
+}
+
 export type QueryGetDieArgs = {
   numSides?: InputMaybe<Scalars['Int']['input']>;
 }
@@ -39,18 +63,24 @@ export type RandomDieRollArgs = {
   numRolls: Scalars['Int']['input'];
 }
 
-export interface QueryResolversClass {
-  getDie(parent: Query, args: QueryGetDieArgs, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<RandomDie>;
+export interface IMutationResolver {
+  createReview(args: MutationCreateReviewArgs, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Maybe<IReviewResolver>>;
 }
 
-export interface RandomDieResolversClass {
-  numSides(parent: RandomDie, args: {}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Scalars['Int']['output']>;
-  rollOnce(parent: RandomDie, args: {}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Scalars['Int']['output']>;
-  roll(parent: RandomDie, args: RandomDieRollArgs, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Array<Scalars['Int']['output']>>;
+export interface IQueryResolver {
+  getDie(args: QueryGetDieArgs, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<IRandomDieResolver>;
 }
 
-export type Resolvers = {
-  Query?: Partial<QueryResolversClass>;
-  RandomDie?: Partial<RandomDieResolversClass>;
-};
+export interface IRandomDieResolver {
+  numSides(args: {}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Scalars['Int']['output']>;
+  rollOnce(args: {}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Scalars['Int']['output']>;
+  roll(args: RandomDieRollArgs, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Array<Scalars['Int']['output']>>;
+}
+
+export interface IReviewResolver {
+  stars(args: {}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Scalars['Int']['output']>;
+  commentary(args: {}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<Maybe<Scalars['String']['output']>>;
+}
+
+export type Resolvers = IQueryResolver & IMutationResolver;
 

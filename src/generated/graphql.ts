@@ -12,6 +12,24 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  Date: { input: any; output: any; }
+};
+
+export enum Episode {
+  Empire = 'EMPIRE',
+  Jedi = 'JEDI',
+  Newhope = 'NEWHOPE'
+}
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createReview?: Maybe<Review>;
+};
+
+
+export type MutationCreateReviewArgs = {
+  episode?: InputMaybe<Episode>;
+  review: ReviewInput;
 };
 
 export type Query = {
@@ -34,4 +52,15 @@ export type RandomDie = {
 
 export type RandomDieRollArgs = {
   numRolls: Scalars['Int']['input'];
+};
+
+export type Review = {
+  __typename?: 'Review';
+  commentary?: Maybe<Scalars['String']['output']>;
+  stars: Scalars['Int']['output'];
+};
+
+export type ReviewInput = {
+  commentary?: InputMaybe<Scalars['String']['input']>;
+  stars: Scalars['Int']['input'];
 };

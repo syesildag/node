@@ -117,6 +117,24 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
+function getNamedTypeName(type: GraphQLType): string | null {
+  let t: GraphQLType = type
+  if (isNonNullType(t)) {
+    // @ts-ignore
+    t = t.ofType
+  }
+  while (isListType(t)) {
+    // @ts-ignore
+    t = t.ofType
+    if (isNonNullType(t)) {
+      // @ts-ignore
+      t = t.ofType
+    }
+  }
+  // @ts-ignore
+  return (t as any).name || null
+}
+
 async function main() {
   const sdl = await readFile(SCHEMA_FILE, 'utf8')
   const ast = parse(sdl)
@@ -203,92 +221,6 @@ async function main() {
       lines.push('')
     }
   }
-
-  // Object types -> data interfaces and collect resolver-class interfaces + arg interfaces
-  const classInterfaces: Record<string, string[]> = {}
-  const argInterfacesMap: Record<string, string[]> = {}
-
-  for (const typeName of Object.keys(typeMap).sort()) {
-    const type = typeMap[typeName]
-    if (!typeName.startsWith('__') && isObjectType(type)) {
-      const ot = type as GraphQLObjectType
-      // Data output type: include all fields and __typename
-      lines.push(`export type ${typeName} = {`)
-      lines.push(`  __typename?: '${typeName}';`)
-      const fields = ot.getFields()
-      for (const fName of Object.keys(fields)) {
-        const field = fields[fName]
-        const { ts, nullable } = unwrapTypeForScalars(field.type as GraphQLType, 'output')
-        if (nullable) {
-          lines.push(`  ${fName}: Maybe<${ts}>;`)
-        } else {
-          lines.push(`  ${fName}: ${ts};`)
-        }
-      }
-      lines.push('}')
-      lines.push('')
-
-      // collect resolver-class method signatures
-      const methodLines: string[] = []
-      for (const fName of Object.keys(fields)) {
-        const field = fields[fName]
-        let argsType = '{}'
-        if (field.args && field.args.length > 0) {
-          const argsIfaceName = makeArgsInterfaceName(typeName, fName)
-          argsType = argsIfaceName
-          if (!argInterfacesMap[argsIfaceName]) {
-            const argLines: string[] = []
-            argLines.push(`export type ${argsIfaceName} = {`)
-            for (const a of field.args) {
-              const { ts, nullable } = unwrapTypeForScalars(a.type as GraphQLType, 'input')
-              if (nullable) {
-                argLines.push(`  ${a.name}?: InputMaybe<${ts}>;`)
-              } else {
-                argLines.push(`  ${a.name}: ${ts};`)
-              }
-            }
-            argLines.push('}')
-            argLines.push('')
-            argInterfacesMap[argsIfaceName] = argLines
-          }
-        }
-
-        const { ts: returnTs, nullable: returnNullable } = unwrapTypeForScalars(field.type as GraphQLType, 'output')
-        const parentType = typeName
-        const returnTypeWrapped = returnNullable ? `Maybe<${returnTs}>` : returnTs
-        methodLines.push(
-          `  ${fName}(parent: ${parentType}, args: ${argsType}, ctx?: Context, info?: GraphQLResolveInfo): ResolverTypeWrapper<${returnTypeWrapped}>;`
-        )
-      }
-      classInterfaces[`${typeName}ResolversClass`] = methodLines
-    }
-  }
-
-  // Emit collected arg interfaces (top-level, not nested)
-  for (const k of Object.keys(argInterfacesMap)) {
-    lines.push(...argInterfacesMap[k])
-  }
-
-  // Emit resolver-class interfaces
-  for (const className of Object.keys(classInterfaces)) {
-    lines.push(`export interface ${className} {`)
-    lines.push(...classInterfaces[className])
-    lines.push('}')
-    lines.push('')
-  }
-
-  // (Removed) per-type generic mapped resolver function types — using class-style interfaces and top-level Resolvers mapping instead.
-
-  // Resolvers mapping type - simple Partial mapping against class-style interfaces
-  lines.push('export type Resolvers = {')
-  for (const typeName of Object.keys(typeMap).sort()) {
-    const type = typeMap[typeName]
-    if (!typeName.startsWith('__') && isObjectType(type)) {
-      lines.push(`  ${typeName}?: Partial<${typeName}ResolversClass>;`)
-    }
-  }
-  lines.push('};')
-  lines.push('')
 
   // Write output
   const content = lines.join('\n') + '\n'

@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,6 +14,24 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  Date: { input: any; output: any; }
+};
+
+export enum Episode {
+  Empire = 'EMPIRE',
+  Jedi = 'JEDI',
+  Newhope = 'NEWHOPE'
+}
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createReview?: Maybe<Review>;
+};
+
+
+export type MutationCreateReviewArgs = {
+  episode?: InputMaybe<Episode>;
+  review: ReviewInput;
 };
 
 export type Query = {
@@ -36,6 +54,17 @@ export type RandomDie = {
 
 export type RandomDieRollArgs = {
   numRolls: Scalars['Int']['input'];
+};
+
+export type Review = {
+  __typename?: 'Review';
+  commentary?: Maybe<Scalars['String']['output']>;
+  stars: Scalars['Int']['output'];
+};
+
+export type ReviewInput = {
+  commentary?: InputMaybe<Scalars['String']['input']>;
+  stars: Scalars['Int']['input'];
 };
 
 
@@ -112,19 +141,36 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Date: ResolverTypeWrapper<Scalars['Date']['output']>;
+  Episode: Episode;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   RandomDie: ResolverTypeWrapper<RandomDie>;
+  Review: ResolverTypeWrapper<Review>;
+  ReviewInput: ReviewInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  Date: Scalars['Date']['output'];
   Int: Scalars['Int']['output'];
+  Mutation: Record<PropertyKey, never>;
   Query: Record<PropertyKey, never>;
   RandomDie: RandomDie;
+  Review: Review;
+  ReviewInput: ReviewInput;
   String: Scalars['String']['output'];
+};
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createReview?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<MutationCreateReviewArgs, 'review'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -137,8 +183,16 @@ export type RandomDieResolvers<ContextType = any, ParentType extends ResolversPa
   rollOnce?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 };
 
+export type ReviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review']> = {
+  commentary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  stars?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
+  Date?: GraphQLScalarType;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RandomDie?: RandomDieResolvers<ContextType>;
+  Review?: ReviewResolvers<ContextType>;
 };
 

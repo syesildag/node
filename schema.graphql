@@ -2,8 +2,30 @@ type Query {
    getDie(numSides: Int): RandomDie!
 }
 
+type Mutation {
+  createReview(episode: Episode, review: ReviewInput!): Review
+}
+
 type RandomDie {
    numSides: Int!
    rollOnce: Int!
    roll(numRolls: Int!): [Int!]!
 }
+
+input ReviewInput {
+  stars: Int!
+  commentary: String
+}
+
+type Review {
+  stars: Int!
+  commentary: String
+}
+
+enum Episode {
+  NEWHOPE
+  EMPIRE
+  JEDI
+}
+
+scalar Date
