@@ -1,4 +1,4 @@
-export default function* rangeIterator(start = 0, end = Infinity, step = 1) {
+export default function *rangeIterator(start = 0, end = Infinity, step = 1) {
    let count = 0;
    for (let i = start; i < end; i += step) {
       count++;

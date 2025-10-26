@@ -3,3 +3,8 @@ dist
 deploy
 auth.json
 sea-prep.blob
+.env
+.env.local
+.env.development
+.env.testing
+.env.production

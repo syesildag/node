@@ -46,6 +46,7 @@
       "@mui/material": "^6.1.6",
       "@tensorflow-models/mobilenet": "^2.1.1",
       "@tensorflow/tfjs-node": "^4.20.0",
+      "@types/ws": "^8.18.1",
       "@uiw/react-json-view": "^2.0.0-alpha.27",
       "chess.js": "^1.1.0",
       "compression": "^1.7.4",
@@ -59,6 +60,7 @@
       "node-schedule": "^2.1.1",
       "react": "^18.3.1",
       "react-dom": "^18.3.1",
-      "serve-favicon": "^2.5.0"
+      "serve-favicon": "^2.5.0",
+      "ws": "^8.18.3"
    }
 }
