@@ -3,11 +3,10 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import fs from 'fs';
-import { createServer as createHttpServer } from 'http';
-import { createServer, ServerOptions } from 'https';
 import { buildSchema } from "graphql";
-import { RequestParams, Request as GraphQLRequest } from "graphql-http";
+import { Request as GraphQLRequest, RequestParams } from "graphql-http";
 import { createHandler } from "graphql-http/lib/use/express";
+import { createServer, ServerOptions } from 'https';
 import { Socket } from "net";
 import schedule from "node-schedule";
 import path from 'path';
@@ -15,11 +14,11 @@ import favicon from "serve-favicon";
 import { WebSocketServer } from 'ws';
 import { Context } from "./context";
 import rootValue from "./graphql/root";
-import { chatService } from "./services/chat-service";
 import { Constructor } from "./utils/annotations";
 import stringify from "./utils/circularJSON";
 import { getAbsoluteFileNamesFromDir, getFileNamesFromDir } from "./utils/fileNames";
 import JobFactory from "./utils/jobFactory";
+import { getHandler } from './ws/factory';
 
 const app = express();
 
@@ -178,111 +177,21 @@ wss.on('connection', (ws, req) => {
 
    console.log(`New WebSocket connection established for path: ${pathname}`);
 
-   // Route WebSocket connections based on path (similar to Express routing)
-   if (pathname === '/chat') {
-      handleChatConnection(ws, req);
-   } else if (pathname === '/game') {
-      handleGameConnection(ws, req);
-   } else {
-      // Unknown path - close connection
-      ws.close(1008, 'Unknown WebSocket path');
+   // Route WebSocket connections using factory
+   try {
+      const handler = getHandler(pathname);
+      if (handler) {
+         handler(ws, req);
+      } else {
+         ws.close(1008, 'Unknown WebSocket path');
+      }
+   } catch (err) {
+      console.error('Failed to resolve WS handler:', err);
+      ws.close(1011, 'Internal server error');
    }
 });
 
-// Chat-specific WebSocket handler
-function handleChatConnection(ws: any, req: any) {
-   ws.on('message', async (data: Buffer) => {
-      try {
-         const message = JSON.parse(data.toString());
-
-         if (message.type === 'chat_message') {
-            const { content, sessionId, stream, model, temperature } = message;
-
-            if (stream) {
-               // Handle streaming response
-               try {
-                  let accumulatedContent = '';
-                  for await (const chunk of chatService.streamMessage({
-                     messages: [{ role: 'user', content }],
-                     model: model || 'gpt-3.5-turbo',
-                     temperature: temperature || 0.7,
-                     sessionId
-                  })) {
-                     accumulatedContent += chunk;
-                     ws.send(JSON.stringify({
-                        type: 'stream_chunk',
-                        chunk,
-                        messageId: Date.now().toString()
-                     }));
-                  }
-
-                  // Send completion message
-                  ws.send(JSON.stringify({
-                     type: 'stream_end',
-                     messageId: Date.now().toString(),
-                     content: accumulatedContent,
-                     timestamp: new Date().toISOString()
-                  }));
-
-               } catch (error) {
-                  console.error('Streaming error:', error);
-                  ws.send(JSON.stringify({
-                     type: 'error',
-                     message: error instanceof Error ? error.message : 'Streaming failed'
-                  }));
-               }
-            } else {
-               // Handle regular response
-               try {
-                  const response = await chatService.sendMessage({
-                     messages: [{ role: 'user', content }],
-                     model: model || 'gpt-3.5-turbo',
-                     temperature: temperature || 0.7,
-                     sessionId
-                  });
-
-                  ws.send(JSON.stringify({
-                     type: 'chat_response',
-                     content: response.choices[0].message.content,
-                     messageId: Date.now().toString(),
-                     timestamp: new Date().toISOString(),
-                     metadata: {
-                        usage: response.usage
-                     }
-                  }));
-
-               } catch (error) {
-                  console.error('Chat error:', error);
-                  ws.send(JSON.stringify({
-                     type: 'error',
-                     message: error instanceof Error ? error.message : 'Chat request failed'
-                  }));
-               }
-            }
-         }
-      } catch (error) {
-         console.error('WebSocket message parsing error:', error);
-         ws.send(JSON.stringify({
-            type: 'error',
-            message: 'Invalid message format'
-         }));
-      }
-   });
-
-   ws.on('close', () => {
-      console.log('Chat WebSocket connection closed');
-   });
-
-   ws.on('error', (error: Error) => {
-      console.error('Chat WebSocket error:', error);
-   });
-}
-
-// Placeholder for game WebSocket handler
-function handleGameConnection(ws: any, req: any) {
-   console.log('Game WebSocket connection - not implemented yet');
-   ws.close(1000, 'Game functionality not implemented');
-}
+// WebSocket handlers have been moved to `src/ws/handlers/*` and are resolved via `src/ws/factory`.
 
 console.log(`[server]: WebSocket server ready at 'wss://${HOST}:${PORT}'`);
 
