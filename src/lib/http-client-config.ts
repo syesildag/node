@@ -1,38 +1,37 @@
 // src/lib/http-client-config.ts
 import { HttpClient, HttpConfig } from './http-client';
 
-// Environment variables
-const AI_CHAT_URL = process.env.AI_CHAT_URL || 'https://api.openai.com/v1/chat/completions';
-const AI_API_KEY = process.env.AI_API_KEY || '';
+export type HttpConfigKey = 'default' | 'github' | 'weather';
 
 // Default configurations for different APIs
-export const httpConfigs: Record<string, HttpConfig> = {
+export const httpConfigs: Record<HttpConfigKey, HttpConfig> = {
   default: {
+    baseURL: process.env.AI_CHAT_URL,
     timeout: 30000,
     retries: 3,
     retryDelay: 1000,
     maxRetryDelay: 30000,
     headers: {
+      'Authorization': `Basic ${Buffer.from(`${process.env.AI_CHAT_USERNAME}:${process.env.AI_CHAT_PASSWORD}`).toString('base64')}`,
       'User-Agent': 'NodeJS-HttpClient/1.0',
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     }
   },
 
-  aiChat: {
-    baseURL: AI_CHAT_URL,
-    timeout: 60000, // Longer timeout for AI requests
-    retries: 2,
-    retryDelay: 2000,
-    headers: {
-      'Authorization': `Bearer ${AI_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    rateLimit: {
-      requests: 50, // requests per period
-      period: 60000 // 1 minute
-    }
-  },
+  // aiChat: {
+  //   timeout: 60000, // Longer timeout for AI requests
+  //   retries: 2,
+  //   retryDelay: 2000,
+  //   headers: {
+  //     'Authorization': `Bearer ${AI_API_KEY}`,
+  //     'Content-Type': 'application/json'
+  //   },
+  //   rateLimit: {
+  //     requests: 50, // requests per period
+  //     period: 60000 // 1 minute
+  //   }
+  // },
 
   github: {
     baseURL: 'https://api.github.com',
@@ -62,7 +61,6 @@ export const httpConfigs: Record<string, HttpConfig> = {
 // Create configured clients
 export const clients = {
   default: new HttpClient(httpConfigs.default),
-  aiChat: new HttpClient(httpConfigs.aiChat),
   github: new HttpClient(httpConfigs.github),
   weather: new HttpClient(httpConfigs.weather)
 };

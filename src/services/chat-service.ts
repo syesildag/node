@@ -53,7 +53,7 @@ export class ChatService {
   // Send a chat message and get response
   async sendMessage(request: ChatRequest): Promise<ChatResponse> {
     try {
-      const response: HttpResponse<ChatResponse> = await clients.aiChat.post('/chat/completions', {
+      const response: HttpResponse<ChatResponse> = await clients.default.post('/chat/completions', {
         model: request.model || 'gpt-3.5-turbo',
         messages: request.messages,
         temperature: request.temperature || 0.7,
@@ -89,18 +89,13 @@ export class ChatService {
   // Stream a chat response
   async *streamMessage(request: ChatRequest): AsyncGenerator<string, void, unknown> {
     try {
-      const streamRequest = {
-        model: request.model || 'gpt-3.5-turbo',
-        messages: request.messages,
-        temperature: request.temperature || 0.7,
-        max_tokens: request.max_tokens || 1000,
-        stream: true
-      };
-
       let accumulatedContent = '';
       const userMessage = request.messages[request.messages.length - 1];
-
-      for await (const chunk of clients.aiChat.postStream('/chat/completions', streamRequest)) {
+      const streamRequest = {
+        prompt: userMessage.content,
+        session: request.sessionId,
+      };
+      for await (const chunk of clients.default.postStream(process.env.CHAT_API_URL!, streamRequest)) {
         // Parse the streaming response (SSE format)
         const lines = chunk.split('\n').filter((line: string) => line.trim());
 
