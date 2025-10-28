@@ -1,6 +1,6 @@
 import React from "react";
 import Page from "../../../../react/page";
-import styles from "../../../styles/voice.module.css";
+import styles from "../../../css/voice.module.css";
 
 // Type declarations for Web Speech API
 declare global {

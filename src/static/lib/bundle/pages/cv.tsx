@@ -9,7 +9,7 @@ import { SvgIconProps, SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import React, { CSSProperties, useEffect, useState } from "react";
 import Page from "../../../../react/page";
-import styles from "../../../styles/cv.module.css";
+import styles from "../../../css/cv.module.css";
 
 function createWithStyle<C extends OverridableComponent<SvgIconTypeMap>>(svgIcon: C, props: CSSProperties = {}) {
    return styled(svgIcon)<SvgIconProps>(({ theme }) => ({
